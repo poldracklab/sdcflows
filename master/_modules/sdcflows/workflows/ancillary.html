@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.ancillary &mdash; sdcflows 2.0.1.dev9 documentation</title>
+  <title>sdcflows.workflows.ancillary &mdash; sdcflows 2.0.1.dev14 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev9
+                2.0.1.dev14
               </div>
             
           
@@ -212,13 +212,8 @@
     <span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 
     <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
-        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
-            <span class="n">fields</span><span class="o">=</span><span class="p">(</span>
-                <span class="s2">&quot;in_file&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;bspline_dist&quot;</span>
-            <span class="p">)</span>
-        <span class="p">),</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span><span class="p">)</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;in_file&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline_dist&quot;</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span>
+    <span class="p">)</span>
     <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
         <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
             <span class="n">fields</span><span class="o">=</span><span class="p">(</span>
@@ -331,6 +326,7 @@
         <dl>
             <dt>Branches</dt>
             <dd><a href="../../../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
+            <dd><a href="../../../../enh_syn-preprocessing-wf/index.html">enh/syn-preprocessing-wf</a></dd>
             <dd><a href="../../../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>

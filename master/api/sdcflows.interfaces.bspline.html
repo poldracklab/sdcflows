@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.interfaces.bspline module &mdash; sdcflows 2.0.1.dev9 documentation</title>
+  <title>sdcflows.interfaces.bspline module &mdash; sdcflows 2.0.1.dev14 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                2.0.1.dev9
+                2.0.1.dev14
               </div>
             
           
@@ -354,7 +354,7 @@ cubic B-Spline kernel weights are calculated:</p>
 \beta^3(s_1 - k_1) \cdot \beta^3(s_2 - k_2) \cdot \beta^3(s_3 - k_3),
 \label{eq:2}\tag{2}\]</div>
 <p>where each <span class="math notranslate nohighlight">\(\beta^3\)</span> represents the cubic B-Spline for one dimension.
-The 1D B-Spline kernel implementation uses <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.piecewise.html#numpy.piecewise" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.piecewise</span></code></a>, and is based on the
+The 1D B-Spline kernel implementation uses <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.piecewise.html#numpy.piecewise" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.piecewise</span></code></a>, and is based on the
 closed-form given by Eq. (6) of <a class="reference internal" href="#unser1999" id="id2"><span>[Unser1999]</span></a>.</p>
 <p>By iterating over dimensions, the data samples that fall outside of the compact
 support of the tensor-product kernel associated to each control point can be filtered
@@ -365,7 +365,7 @@ for approximation of data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>; <span class="math notranslate nohighlight">\(N \times 3\)</span>) – Array of 3D coordinates of samples from the data to be approximated,
+<li><p><strong>points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>; <span class="math notranslate nohighlight">\(N \times 3\)</span>) – Array of 3D coordinates of samples from the data to be approximated,
 in index (i,j,k) coordinates with respect to the control points grid.</p></li>
 <li><p><strong>ctrl_nii</strong> (<a class="reference external" href="https://nipy.org/nibabel/reference/nibabel.spatialimages.html#module-nibabel.spatialimages" title="(in NiBabel v3.2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nibabel.spatialimages</span></code></a>) – An spatial image object (typically, a <a class="reference external" href="https://nipy.org/nibabel/reference/nibabel.nifti1.html#nibabel.nifti1.Nifti1Image" title="(in NiBabel v3.2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Nifti1Image</span></code></a>)
 embedding the location of the control points of the B-Spline grid.
@@ -379,7 +379,7 @@ This sparse matrix can be directly used as design matrix for the fitting
 step of approximation/extrapolation.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<span class="math notranslate nohighlight">\(K \times N\)</span>)</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<span class="math notranslate nohighlight">\(K \times N\)</span>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -464,6 +464,7 @@ step of approximation/extrapolation.</p>
         <dl>
             <dt>Branches</dt>
             <dd><a href="../../dev_1.4.0/api/sdcflows.interfaces.bspline.html">dev/1.4.0</a></dd>
+            <dd><a href="../../enh_syn-preprocessing-wf/api/sdcflows.interfaces.bspline.html">enh/syn-preprocessing-wf</a></dd>
             <dd><a href="../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../maint_1.2.x/index.html">maint/1.2.x</a></dd>

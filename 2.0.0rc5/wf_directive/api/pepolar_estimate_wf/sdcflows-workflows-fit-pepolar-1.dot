@@ -1,7 +1,7 @@
 strict digraph  {
 "inputnode (utility)";
 "flatten (utils)";
-"cphdr_warp (utils)";
+"cphdr_warp (header)";
 "unwarp_reference (fixes)";
 "sort_pe (utility)";
 "qwarp (afni)";
@@ -12,14 +12,14 @@ pe1_wf;
 "to_ants (utils)";
 "outputnode (utility)";
 "inputnode (utility)" -> "flatten (utils)";
-"inputnode (utility)" -> "cphdr_warp (utils)";
+"inputnode (utility)" -> "cphdr_warp (header)";
 "inputnode (utility)" -> "unwarp_reference (fixes)";
 "flatten (utils)" -> "sort_pe (utility)";
-"cphdr_warp (utils)" -> "to_ants (utils)";
+"cphdr_warp (header)" -> "to_ants (utils)";
 "unwarp_reference (fixes)" -> "outputnode (utility)";
 "sort_pe (utility)" -> "qwarp (afni)";
 "sort_pe (utility)" -> "merge_pes (freesurfer)";
-"qwarp (afni)" -> "cphdr_warp (utils)";
+"qwarp (afni)" -> "cphdr_warp (header)";
 "merge_pes (freesurfer)" -> pe0_wf;
 "merge_pes (freesurfer)" -> pe1_wf;
 pe0_wf -> "align_pes (fixes)";
