@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.interfaces.utils module &mdash; sdcflows 2.0.1.dev14 documentation</title>
+  <title>sdcflows.interfaces.utils module &mdash; sdcflows 2.0.1.dev31 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                2.0.1.dev14
+                2.0.1.dev31
               </div>
             
           
@@ -209,25 +209,71 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="sdcflows.interfaces.utils.DenoiseImage">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.utils.</code><code class="sig-name descname">DenoiseImage</code><span class="sig-paren">(</span><em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/utils.html#DenoiseImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.utils.DenoiseImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.ants.segmentation.DenoiseImage</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.mixins.fixheader.CopyHeaderInterface</span></code></p>
+<p>Wrapped executable: <code class="docutils literal notranslate"><span class="pre">DenoiseImage</span></code>.</p>
+<p>Add copy_header capability to DenoiseImage from nipype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mandatory Inputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_image</strong> (<em>a pathlike object or string representing an existing file</em>) – A scalar image is expected as input for noise correction.
+Maps to a command-line argument: <code class="code docutils literal notranslate"><span class="pre">-i</span> <span class="pre">%s</span></code>.</p></li>
+<li><p><strong>save_noise</strong> (<em>a boolean</em>) – True if the estimated noise should be saved to file.
+Mutually <strong>exclusive</strong> with inputs: <code class="docutils literal notranslate"><span class="pre">noise_image</span></code>.
+(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Optional Inputs</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>args</strong> (<em>a string</em>) – Additional parameters to the command.
+Maps to a command-line argument: <code class="code docutils literal notranslate"><span class="pre">%s</span></code>.</p></li>
+<li><p><strong>copy_header</strong> (<em>a boolean</em>) – Copy headers of the original image into the output (corrected) file.
+(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p><strong>dimension</strong> (<em>2 or 3 or 4</em>) – This option forces the image to be treated as a specified-dimensional image. If not specified, the program tries to infer the dimensionality from the input image.
+Maps to a command-line argument: <code class="code docutils literal notranslate"><span class="pre">-d</span> <span class="pre">%d</span></code>.</p></li>
+<li><p><strong>environ</strong> (<em>a dictionary with keys which are a bytes or None or a value of class ‘str’ and with values which are a bytes or None or a value of class ‘str’</em>) – Environment variables.
+(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">{}</span></code>)</p></li>
+<li><p><strong>noise_image</strong> (<em>a pathlike object or string representing a file</em>) – Filename for the estimated noise.</p></li>
+<li><p><strong>noise_model</strong> (<em>‘Gaussian’ or ‘Rician’</em>) – Employ a Rician or Gaussian noise model.
+Maps to a command-line argument: <code class="code docutils literal notranslate"><span class="pre">-n</span> <span class="pre">%s</span></code>.
+(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">Gaussian</span></code>)</p></li>
+<li><p><strong>num_threads</strong> (<em>an integer</em>) – Number of ITK threads to use.
+(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>output_image</strong> (<em>a pathlike object or string representing a file</em>) – The output consists of the noise corrected version of the input image.
+Maps to a command-line argument: <code class="code docutils literal notranslate"><span class="pre">-o</span> <span class="pre">%s</span></code>.</p></li>
+<li><p><strong>shrink_factor</strong> (<em>an integer</em>) – Running noise correction on large images can be time consuming. To lessen computation time, the input image can be resampled. The shrink factor, specified as a single integer, describes this resampling. Shrink factor = 1 is the default.
+Maps to a command-line argument: <code class="code docutils literal notranslate"><span class="pre">-s</span> <span class="pre">%s</span></code>.
+(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>verbose</strong> (<em>a boolean</em>) – Verbose output.
+Maps to a command-line argument: <code class="code docutils literal notranslate"><span class="pre">-v</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Outputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>noise_image</strong> (<em>a pathlike object or string representing a file</em>)</p></li>
+<li><p><strong>output_image</strong> (<em>a pathlike object or string representing an existing file</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
 <dt id="sdcflows.interfaces.utils.Deoblique">
 <em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.utils.</code><code class="sig-name descname">Deoblique</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/utils.html#Deoblique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.utils.Deoblique" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
 <p>Make a dataset plumb.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Mandatory Inputs</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>in_anat</strong> (<em>a pathlike object or string representing an existing file</em>) – The corresponging anatomical dataset potentially oblique.</p></li>
-<li><p><strong>in_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – The EPI dataset potentially oblique.</p></li>
-<li><p><strong>mask_anat</strong> (<em>a pathlike object or string representing an existing file</em>) – A binary mask corresponding to the anatomical dataset.</p></li>
-<li><p><strong>mask_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – A binary mask corresponding to the EPI dataset.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>in_file</strong> (<em>a pathlike object or string representing an existing file</em>) – The input dataset potentially oblique.</p>
 </dd>
-<dt class="field-even">Outputs</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>mask_anat</strong> (<em>a pathlike object or string representing an existing file</em>) – A binary mask corresponding to the anatomical dataset.</p></li>
-<li><p><strong>mask_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – A binary mask corresponding to the EPI dataset.</p></li>
-<li><p><strong>out_anat</strong> (<em>a pathlike object or string representing an existing file</em>) – The plumb, anatomical dataset.</p></li>
-<li><p><strong>out_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – The plumb, EPI dataset.</p></li>
+<dt class="field-even">Optional Inputs</dt>
+<dd class="field-even"><p><strong>in_mask</strong> (<em>a pathlike object or string representing an existing file</em>) – A binary mask corresponding to the input dataset.</p>
+</dd>
+<dt class="field-odd">Outputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_file</strong> (<em>a pathlike object or string representing an existing file</em>) – The input dataset, after correcting obliquity.</p></li>
+<li><p><strong>out_mask</strong> (<em>a pathlike object or string representing an existing file</em>) – The input mask, after correcting obliquity.</p></li>
 </ul>
 </dd>
 </dl>
@@ -299,10 +345,14 @@
 <li><p><strong>in_plumb</strong> (<em>a pathlike object or string representing an existing file</em>) – The plumb EPI image.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Outputs</dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-even">Optional Inputs</dt>
+<dd class="field-even"><p><strong>in_mask</strong> (<em>a pathlike object or string representing an existing file</em>) – A binary mask corresponding to the input dataset.</p>
+</dd>
+<dt class="field-odd">Outputs</dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>out_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – The reoblique’d EPI image.</p></li>
 <li><p><strong>out_field</strong> (<em>a pathlike object or string representing an existing file</em>) – The reoblique’d EPI image.</p></li>
+<li><p><strong>out_mask</strong> (<em>a pathlike object or string representing an existing file</em>) – The input mask, after correcting obliquity.</p></li>
 </ul>
 </dd>
 </dl>
@@ -382,7 +432,6 @@
         <dl>
             <dt>Branches</dt>
             <dd><a href="../../dev_1.4.0/api/sdcflows.interfaces.utils.html">dev/1.4.0</a></dd>
-            <dd><a href="../../enh_syn-preprocessing-wf/api/sdcflows.interfaces.utils.html">enh/syn-preprocessing-wf</a></dd>
             <dd><a href="../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../maint_1.2.x/index.html">maint/1.2.x</a></dd>

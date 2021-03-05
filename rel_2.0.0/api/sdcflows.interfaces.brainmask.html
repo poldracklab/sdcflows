@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.interfaces.brainmask module &mdash; sdcflows 2.0.1.dev14 documentation</title>
+  <title>sdcflows.interfaces.brainmask module &mdash; sdcflows 2.0.1.dev31 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                2.0.1.dev14
+                2.0.1.dev31
               </div>
             
           
@@ -197,6 +197,25 @@
 <span id="sdcflows-interfaces-brainmask-module"></span><h1>sdcflows.interfaces.brainmask module<a class="headerlink" href="#module-sdcflows.interfaces.brainmask" title="Permalink to this headline">¶</a></h1>
 <p>Brain extraction interfaces.</p>
 <dl class="class">
+<dt id="sdcflows.interfaces.brainmask.BinaryDilation">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.brainmask.</code><code class="sig-name descname">BinaryDilation</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/brainmask.html#BinaryDilation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.brainmask.BinaryDilation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Brain extraction for EPI and GRE data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mandatory Inputs</dt>
+<dd class="field-odd"><p><strong>in_file</strong> (<em>a pathlike object or string representing an existing file</em>) – Binary file to dilate.</p>
+</dd>
+<dt class="field-even">Optional Inputs</dt>
+<dd class="field-even"><p><strong>radius</strong> (<em>a float</em>) – Structure element (ball) radius.
+(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">3</span></code>)</p>
+</dd>
+<dt class="field-odd">Outputs</dt>
+<dd class="field-odd"><p><strong>out_file</strong> (<em>a pathlike object or string representing an existing file</em>) – The input file, after binary dilation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
 <dt id="sdcflows.interfaces.brainmask.BrainExtraction">
 <em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.brainmask.</code><code class="sig-name descname">BrainExtraction</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/brainmask.html#BrainExtraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.brainmask.BrainExtraction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
@@ -211,6 +230,24 @@
 <li><p><strong>out_mask</strong> (<em>a pathlike object or string representing an existing file</em>) – The binary brain mask.</p></li>
 <li><p><strong>out_probseg</strong> (<em>a pathlike object or string representing an existing file</em>) – The probabilistic brain mask.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="sdcflows.interfaces.brainmask.Union">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.brainmask.</code><code class="sig-name descname">Union</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/brainmask.html#Union"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.brainmask.Union" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Brain extraction for EPI and GRE data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mandatory Inputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in1</strong> (<em>a pathlike object or string representing an existing file</em>) – Binary file.</p></li>
+<li><p><strong>in2</strong> (<em>a pathlike object or string representing an existing file</em>) – Binary file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Outputs</dt>
+<dd class="field-even"><p><strong>out_file</strong> (<em>a pathlike object or string representing an existing file</em>) – The input file, after binary dilation.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -289,7 +326,6 @@
         <dl>
             <dt>Branches</dt>
             <dd><a href="../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
-            <dd><a href="../../enh_syn-preprocessing-wf/api/sdcflows.interfaces.brainmask.html">enh/syn-preprocessing-wf</a></dd>
             <dd><a href="../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../maint_1.2.x/index.html">maint/1.2.x</a></dd>

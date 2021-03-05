@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.interfaces.utils &mdash; sdcflows 2.0.1.dev14 documentation</title>
+  <title>sdcflows.interfaces.utils &mdash; sdcflows 2.0.1.dev31 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev14
+                2.0.1.dev31
               </div>
             
           
@@ -179,7 +179,13 @@
     <span class="n">SimpleInterface</span><span class="p">,</span>
     <span class="n">InputMultiObject</span><span class="p">,</span>
     <span class="n">OutputMultiObject</span><span class="p">,</span>
+    <span class="n">isdefined</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces.ants.segmentation</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DenoiseImage</span> <span class="k">as</span> <span class="n">_DenoiseImageBase</span><span class="p">,</span>
+    <span class="n">DenoiseImageInputSpec</span> <span class="k">as</span> <span class="n">_DenoiseImageInputSpecBase</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces.mixins</span> <span class="kn">import</span> <span class="n">CopyHeaderInterface</span> <span class="k">as</span> <span class="n">_CopyHeaderInterface</span>
 
 <span class="n">OBLIQUE_THRESHOLD_DEG</span> <span class="o">=</span> <span class="mf">0.5</span>
 
@@ -252,39 +258,18 @@
 
 
 <span class="k">class</span> <span class="nc">_DeobliqueInputSpec</span><span class="p">(</span><span class="n">BaseInterfaceInputSpec</span><span class="p">):</span>
-    <span class="n">in_epi</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the EPI dataset potentially oblique&quot;</span>
+    <span class="n">in_file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
+        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the input dataset potentially oblique&quot;</span>
     <span class="p">)</span>
-    <span class="n">mask_epi</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
+    <span class="n">in_mask</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
         <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;a binary mask corresponding to the EPI dataset&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">in_anat</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the corresponging anatomical dataset potentially oblique&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">mask_anat</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;a binary mask corresponding to the anatomical dataset&quot;</span><span class="p">,</span>
+        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;a binary mask corresponding to the input dataset&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_DeobliqueOutputSpec</span><span class="p">(</span><span class="n">TraitedSpec</span><span class="p">):</span>
-    <span class="n">out_epi</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the plumb, EPI dataset&quot;</span><span class="p">)</span>
-    <span class="n">out_anat</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the plumb, anatomical dataset&quot;</span><span class="p">)</span>
-    <span class="n">mask_epi</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;a binary mask corresponding to the EPI dataset&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">mask_anat</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;a binary mask corresponding to the anatomical dataset&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the input dataset, after correcting obliquity&quot;</span><span class="p">)</span>
+    <span class="n">out_mask</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the input mask, after correcting obliquity&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Deoblique"><a class="viewcode-back" href="../../../api/sdcflows.interfaces.utils.html#sdcflows.interfaces.utils.Deoblique">[docs]</a><span class="k">class</span> <span class="nc">Deoblique</span><span class="p">(</span><span class="n">SimpleInterface</span><span class="p">):</span>
@@ -294,18 +279,18 @@
     <span class="n">output_spec</span> <span class="o">=</span> <span class="n">_DeobliqueOutputSpec</span>
 
     <span class="k">def</span> <span class="nf">_run_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="p">):</span>
-        <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_epi&quot;</span><span class="p">],</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_anat&quot;</span><span class="p">],</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;mask_epi&quot;</span><span class="p">],</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;mask_anat&quot;</span><span class="p">],</span>
-        <span class="p">)</span> <span class="o">=</span> <span class="n">_deoblique</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_epi</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_anat</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">mask_epi</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">mask_anat</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deoblique</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_file</span><span class="p">,</span>
             <span class="n">newpath</span><span class="o">=</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span><span class="p">,</span>
         <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">isdefined</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_mask</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deoblique</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_mask</span><span class="p">,</span>
+                <span class="n">in_affine</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_file&quot;</span><span class="p">],</span>
+                <span class="n">newpath</span><span class="o">=</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span><span class="p">,</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="n">runtime</span></div>
 
 
@@ -319,11 +304,16 @@
     <span class="n">in_epi</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
         <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the original, potentially oblique EPI image&quot;</span>
     <span class="p">)</span>
+    <span class="n">in_mask</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
+        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;a binary mask corresponding to the input dataset&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_ReobliqueOutputSpec</span><span class="p">(</span><span class="n">TraitedSpec</span><span class="p">):</span>
     <span class="n">out_epi</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the reoblique&#39;d EPI image&quot;</span><span class="p">)</span>
     <span class="n">out_field</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the reoblique&#39;d EPI image&quot;</span><span class="p">)</span>
+    <span class="n">out_mask</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;the input mask, after correcting obliquity&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Reoblique"><a class="viewcode-back" href="../../../api/sdcflows.interfaces.utils.html#sdcflows.interfaces.utils.Reoblique">[docs]</a><span class="k">class</span> <span class="nc">Reoblique</span><span class="p">(</span><span class="n">SimpleInterface</span><span class="p">):</span>
@@ -333,12 +323,21 @@
     <span class="n">output_spec</span> <span class="o">=</span> <span class="n">_ReobliqueOutputSpec</span>
 
     <span class="k">def</span> <span class="nf">_run_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="p">):</span>
-        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_epi&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_field&quot;</span><span class="p">],)</span> <span class="o">=</span> <span class="n">_reoblique</span><span class="p">(</span>
+        <span class="n">in_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_mask</span> <span class="k">if</span> <span class="n">isdefined</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_mask</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_epi&quot;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_field&quot;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_mask&quot;</span><span class="p">],</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">_reoblique</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_epi</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_plumb</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_field</span><span class="p">,</span>
+            <span class="n">in_mask</span><span class="o">=</span><span class="n">in_mask</span><span class="p">,</span>
             <span class="n">newpath</span><span class="o">=</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_mask</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;out_mask&quot;</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">runtime</span></div>
 
 
@@ -376,6 +375,21 @@
             <span class="n">newpath</span><span class="o">=</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">runtime</span></div>
+
+
+<span class="k">class</span> <span class="nc">_DenoiseImageInputSpec</span><span class="p">(</span><span class="n">_DenoiseImageInputSpecBase</span><span class="p">):</span>
+    <span class="n">copy_header</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">Bool</span><span class="p">(</span>
+        <span class="kc">True</span><span class="p">,</span>
+        <span class="n">usedefault</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;copy headers of the original image into the output (corrected) file&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="DenoiseImage"><a class="viewcode-back" href="../../../api/sdcflows.interfaces.utils.html#sdcflows.interfaces.utils.DenoiseImage">[docs]</a><span class="k">class</span> <span class="nc">DenoiseImage</span><span class="p">(</span><span class="n">_DenoiseImageBase</span><span class="p">,</span> <span class="n">_CopyHeaderInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add copy_header capability to DenoiseImage from nipype.&quot;&quot;&quot;</span>
+
+    <span class="n">input_spec</span> <span class="o">=</span> <span class="n">_DenoiseImageInputSpec</span>
+    <span class="n">_copy_header_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;output_image&quot;</span><span class="p">:</span> <span class="s2">&quot;input_image&quot;</span><span class="p">}</span></div>
 
 
 <span class="k">def</span> <span class="nf">_flatten</span><span class="p">(</span><span class="n">inlist</span><span class="p">,</span> <span class="n">max_trs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -429,53 +443,52 @@
     <span class="k">return</span> <span class="n">out_file</span>
 
 
-<span class="k">def</span> <span class="nf">_deoblique</span><span class="p">(</span><span class="n">in_epi</span><span class="p">,</span> <span class="n">in_anat</span><span class="p">,</span> <span class="n">mask_epi</span><span class="p">,</span> <span class="n">mask_anat</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_deoblique</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">in_affine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
     <span class="kn">import</span> <span class="nn">nibabel</span> <span class="k">as</span> <span class="nn">nb</span>
     <span class="kn">from</span> <span class="nn">nipype.utils.filemanip</span> <span class="kn">import</span> <span class="n">fname_presuffix</span>
 
-    <span class="n">epinii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_epi</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">affines</span><span class="o">.</span><span class="n">obliquity</span><span class="p">(</span><span class="n">epinii</span><span class="o">.</span><span class="n">affine</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">OBLIQUE_THRESHOLD_DEG</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">in_epi</span><span class="p">,</span> <span class="n">in_anat</span><span class="p">,</span> <span class="n">mask_epi</span><span class="p">,</span> <span class="n">mask_anat</span>
+    <span class="n">nii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">affines</span><span class="o">.</span><span class="n">obliquity</span><span class="p">(</span><span class="n">nii</span><span class="o">.</span><span class="n">affine</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">OBLIQUE_THRESHOLD_DEG</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">in_file</span>
 
-    <span class="n">newaff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">newaff</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">epinii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get_zooms</span><span class="p">()[:</span><span class="mi">3</span><span class="p">]))</span>
-    <span class="n">newaff</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">epinii</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+    <span class="k">if</span> <span class="n">in_affine</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">orientation</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">aff2axcodes</span><span class="p">(</span><span class="n">nii</span><span class="o">.</span><span class="n">affine</span><span class="p">)</span>
+        <span class="n">directions</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">l1</span> <span class="o">==</span> <span class="n">l2</span><span class="p">)</span> <span class="k">for</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">orientation</span><span class="p">,</span> <span class="s2">&quot;RAS&quot;</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span>
+            <span class="p">)</span>
+            <span class="o">*</span> <span class="mi">2</span>
+            <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="n">newaff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">newaff</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">directions</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get_zooms</span><span class="p">()[:</span><span class="mi">3</span><span class="p">]))</span>
+        <span class="n">newaff</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nii</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">newaff</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_affine</span><span class="p">)</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="n">hdr</span> <span class="o">=</span> <span class="n">epinii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">hdr</span> <span class="o">=</span> <span class="n">nii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">hdr</span><span class="o">.</span><span class="n">set_qform</span><span class="p">(</span><span class="n">newaff</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">hdr</span><span class="o">.</span><span class="n">set_sform</span><span class="p">(</span><span class="n">newaff</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">newepi</span> <span class="o">=</span> <span class="n">epinii</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">epinii</span><span class="o">.</span><span class="n">dataobj</span><span class="p">,</span> <span class="n">newaff</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span>
-    <span class="n">out_epi</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">in_epi</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;_plumb&quot;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">newpath</span><span class="p">)</span>
-    <span class="n">newepi</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_epi</span><span class="p">)</span>
-
-    <span class="n">out_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">out_epi</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="p">(</span><span class="n">in_anat</span><span class="p">,</span> <span class="n">mask_epi</span><span class="p">,</span> <span class="n">mask_anat</span><span class="p">):</span>
-        <span class="n">nii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-        <span class="n">hdr</span> <span class="o">=</span> <span class="n">nii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">hdr</span><span class="o">.</span><span class="n">set_qform</span><span class="p">(</span><span class="n">newaff</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">hdr</span><span class="o">.</span><span class="n">set_sform</span><span class="p">(</span><span class="n">newaff</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">newnii</span> <span class="o">=</span> <span class="n">nii</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">nii</span><span class="o">.</span><span class="n">dataobj</span><span class="p">),</span> <span class="n">newaff</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;_plumb&quot;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">newpath</span><span class="p">)</span>
-        <span class="n">newnii</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-        <span class="n">out_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">out_files</span><span class="p">)</span>
+    <span class="n">newnii</span> <span class="o">=</span> <span class="n">nii</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">nii</span><span class="o">.</span><span class="n">dataobj</span><span class="p">,</span> <span class="n">newaff</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;_plumb&quot;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">newpath</span><span class="p">)</span>
+    <span class="n">newnii</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_file</span>
 
 
-<span class="k">def</span> <span class="nf">_reoblique</span><span class="p">(</span><span class="n">in_epi</span><span class="p">,</span> <span class="n">in_plumb</span><span class="p">,</span> <span class="n">in_field</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_reoblique</span><span class="p">(</span><span class="n">in_epi</span><span class="p">,</span> <span class="n">in_plumb</span><span class="p">,</span> <span class="n">in_field</span><span class="p">,</span> <span class="n">in_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
     <span class="kn">import</span> <span class="nn">nibabel</span> <span class="k">as</span> <span class="nn">nb</span>
     <span class="kn">from</span> <span class="nn">nipype.utils.filemanip</span> <span class="kn">import</span> <span class="n">fname_presuffix</span>
 
     <span class="n">epinii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_epi</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">affines</span><span class="o">.</span><span class="n">obliquity</span><span class="p">(</span><span class="n">epinii</span><span class="o">.</span><span class="n">affine</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">OBLIQUE_THRESHOLD_DEG</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">in_plumb</span><span class="p">,</span> <span class="n">in_field</span>
+        <span class="k">return</span> <span class="n">in_plumb</span><span class="p">,</span> <span class="n">in_field</span><span class="p">,</span> <span class="n">in_mask</span>
 
     <span class="n">out_files</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;_oriented&quot;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">newpath</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="n">in_plumb</span><span class="p">,</span> <span class="n">in_field</span><span class="p">)</span>
-    <span class="p">]</span>
+    <span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
     <span class="n">plumbnii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_plumb</span><span class="p">)</span>
     <span class="n">plumbnii</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">plumbnii</span><span class="o">.</span><span class="n">dataobj</span><span class="p">,</span> <span class="n">epinii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">epinii</span><span class="o">.</span><span class="n">header</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span>
         <span class="n">out_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -486,6 +499,15 @@
     <span class="n">hdr</span><span class="o">.</span><span class="n">set_qform</span><span class="p">(</span><span class="o">*</span><span class="n">epinii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get_qform</span><span class="p">(</span><span class="n">coded</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
     <span class="n">hdr</span><span class="o">.</span><span class="n">set_sform</span><span class="p">(</span><span class="o">*</span><span class="n">epinii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get_sform</span><span class="p">(</span><span class="n">coded</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
     <span class="n">fmapnii</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">fmapnii</span><span class="o">.</span><span class="n">dataobj</span><span class="p">,</span> <span class="n">epinii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_files</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">in_mask</span><span class="p">:</span>
+        <span class="n">out_files</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">in_mask</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;_oriented&quot;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">newpath</span><span class="p">)</span>
+        <span class="n">masknii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_mask</span><span class="p">)</span>
+        <span class="n">hdr</span> <span class="o">=</span> <span class="n">masknii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">hdr</span><span class="o">.</span><span class="n">set_qform</span><span class="p">(</span><span class="o">*</span><span class="n">epinii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get_qform</span><span class="p">(</span><span class="n">coded</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">hdr</span><span class="o">.</span><span class="n">set_sform</span><span class="p">(</span><span class="o">*</span><span class="n">epinii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get_sform</span><span class="p">(</span><span class="n">coded</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">masknii</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">masknii</span><span class="o">.</span><span class="n">dataobj</span><span class="p">,</span> <span class="n">epinii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_files</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
     <span class="k">return</span> <span class="n">out_files</span>
 
 
@@ -594,7 +616,6 @@
         <dl>
             <dt>Branches</dt>
             <dd><a href="../../../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
-            <dd><a href="../../../../enh_syn-preprocessing-wf/index.html">enh/syn-preprocessing-wf</a></dd>
             <dd><a href="../../../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>

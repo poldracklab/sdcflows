@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.base &mdash; sdcflows 2.0.1.dev14 documentation</title>
+  <title>sdcflows.workflows.base &mdash; sdcflows 2.0.1.dev31 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                2.0.1.dev14
+                2.0.1.dev31
               </div>
             
           
@@ -247,9 +247,11 @@
         <span class="p">]</span>
     <span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">estimator</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">estimators</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">estimator</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">estimators</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">est_wf</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">get_workflow</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
-        <span class="n">source_files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">estimator</span><span class="o">.</span><span class="n">sources</span><span class="p">]</span>
+        <span class="n">source_files</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">estimator</span><span class="o">.</span><span class="n">sources</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;T1w&quot;</span><span class="p">,</span> <span class="s2">&quot;T2w&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
 
         <span class="n">out_map</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
             <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="n">out_fields</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;out_</span><span class="si">{</span><span class="n">estimator</span><span class="o">.</span><span class="n">bids_id</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -381,7 +383,6 @@
         <dl>
             <dt>Branches</dt>
             <dd><a href="../../../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
-            <dd><a href="../../../../enh_syn-preprocessing-wf/index.html">enh/syn-preprocessing-wf</a></dd>
             <dd><a href="../../../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>
