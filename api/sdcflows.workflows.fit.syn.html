@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.fit.syn module &mdash; sdcflows 2.0.1.dev33 documentation</title>
+  <title>sdcflows.workflows.fit.syn module &mdash; sdcflows 2.0.1.dev40 documentation</title>
   
 
   
@@ -66,7 +67,7 @@
             
             
               <div class="version">
-                2.0.1.dev33
+                2.0.1.dev40
               </div>
             
           
@@ -189,10 +190,10 @@
 
 
 
-<div class="section" id="module-sdcflows.workflows.fit.syn">
+<section id="module-sdcflows.workflows.fit.syn">
 <span id="sdcflows-workflows-fit-syn-module"></span><h1>sdcflows.workflows.fit.syn module<a class="headerlink" href="#module-sdcflows.workflows.fit.syn" title="Permalink to this headline">¶</a></h1>
 <p>Estimating the susceptibility distortions without fieldmaps.</p>
-<div class="section" id="fieldmap-less-approaches">
+<section id="fieldmap-less-approaches">
 <span id="sdc-fieldmapless"></span><h2>Fieldmap-less approaches<a class="headerlink" href="#fieldmap-less-approaches" title="Permalink to this headline">¶</a></h2>
 <p>Many studies acquired (especially with legacy MRI protocols) do not have any
 information to estimate susceptibility-derived distortions.
@@ -240,9 +241,9 @@ Berlin: Master Thesis, Freie Universität.</p>
 <code class="sig-prename descclassname">sdcflows.workflows.fit.syn.</code><code class="sig-name descname">init_syn_preprocessing_wf</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">name='syn_preprocessing_wf'</em>, <em class="sig-param">omp_nthreads=1</em>, <em class="sig-param">auto_bold_nss=False</em>, <em class="sig-param">t1w_inversion=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/fit/syn.html#init_syn_preprocessing_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.fit.syn.init_syn_preprocessing_wf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare EPI references and co-registration to anatomical for SyN.</p>
 <dl>
-<dt>Workflow Graph</dt><dd><div class="figure align-default">
+<dt>Workflow Graph</dt><dd><figure class="align-default">
 <img alt="../_images/sdcflows-workflows-fit-syn-1.png" src="../_images/sdcflows-workflows-fit-syn-1.png" />
-</div>
+</figure>
 <p>(<a class="reference external" href="../api/sdcflows-workflows-fit-syn-1.py">Source code</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-syn-1.png">png</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-syn-1.svg">svg</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-syn-1.pdf">pdf</a>)</p>
 </dd>
 </dl>
@@ -285,16 +286,16 @@ the cost function of SyN.</p></li>
 
 <dl class="function">
 <dt id="sdcflows.workflows.fit.syn.init_syn_sdc_wf">
-<code class="sig-prename descclassname">sdcflows.workflows.fit.syn.</code><code class="sig-name descname">init_syn_sdc_wf</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">atlas_threshold=3</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">name='syn_sdc_wf'</em>, <em class="sig-param">omp_nthreads=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/fit/syn.html#init_syn_sdc_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.fit.syn.init_syn_sdc_wf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sdcflows.workflows.fit.syn.</code><code class="sig-name descname">init_syn_sdc_wf</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">atlas_threshold=3</em>, <em class="sig-param">sloppy=False</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">name='syn_sdc_wf'</em>, <em class="sig-param">omp_nthreads=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/fit/syn.html#init_syn_sdc_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.fit.syn.init_syn_sdc_wf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build the <em>fieldmap-less</em> susceptibility-distortion estimation workflow.</p>
 <p>SyN deformation is restricted to the phase-encoding (PE) direction.
 If no PE direction is specified, anterior-posterior PE is assumed.</p>
 <p>SyN deformation is also restricted to regions that are expected to have a
 &gt;3mm (approximately 1 voxel) warp, based on the fieldmap atlas.</p>
 <dl>
-<dt>Workflow Graph</dt><dd><div class="figure align-default">
+<dt>Workflow Graph</dt><dd><figure class="align-default">
 <img alt="../_images/sdcflows-workflows-fit-syn-2.png" src="../_images/sdcflows-workflows-fit-syn-2.png" />
-</div>
+</figure>
 <p>(<a class="reference external" href="../api/sdcflows-workflows-fit-syn-2.py">Source code</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-syn-2.png">png</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-syn-2.svg">svg</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-syn-2.pdf">pdf</a>)</p>
 </dd>
 </dl>
@@ -303,7 +304,8 @@ If no PE direction is specified, anterior-posterior PE is assumed.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atlas_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a>) – Exclude from the registration metric computation areas with average distortions
 below this threshold (in mm).</p></li>
-<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether a fast (less accurate) configuration of the workflow should be applied.</p></li>
+<li><p><strong>sloppy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether a fast (less accurate) configuration of the workflow should be applied.</p></li>
+<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Run in debug mode</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Name for this workflow</p></li>
 <li><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Parallelize internal tasks across the number of CPUs given by this option.</p></li>
 </ul>
@@ -330,8 +332,8 @@ the cost function of SyN</p></li>
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -406,6 +408,7 @@ the cost function of SyN</p></li>
         <dl>
             <dt>Branches</dt>
             <dd><a href="../dev_1.4.0/api/sdcflows.workflows.fit.syn.html">dev/1.4.0</a></dd>
+            <dd><a href="../enh_outputnode-method/api/sdcflows.workflows.fit.syn.html">enh/outputnode-method</a></dd>
             <dd><a href="../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../maint_1.2.x/index.html">maint/1.2.x</a></dd>

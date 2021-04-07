@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.fit.pepolar &mdash; sdcflows 2.0.1.dev33 documentation</title>
+  <title>sdcflows.workflows.fit.pepolar &mdash; sdcflows 2.0.1.dev40 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev33
+                2.0.1.dev40
               </div>
             
           
@@ -190,7 +190,7 @@
 <span class="s2">echo-planar imaging (EPI) references &quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="init_topup_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.fit.pepolar.html#sdcflows.workflows.fit.pepolar.init_topup_wf">[docs]</a><span class="k">def</span> <span class="nf">init_topup_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pepolar_estimate_wf&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="init_topup_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.fit.pepolar.html#sdcflows.workflows.fit.pepolar.init_topup_wf">[docs]</a><span class="k">def</span> <span class="nf">init_topup_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pepolar_estimate_wf&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create the PEPOLAR field estimation workflow based on FSL&#39;s ``topup``.</span>
 
@@ -204,8 +204,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    debug : :obj:`bool`</span>
+<span class="sd">    sloppy : :obj:`bool`</span>
 <span class="sd">        Whether a fast configuration of topup (less accurate) should be applied.</span>
+<span class="sd">    debug : :obj:`bool`</span>
+<span class="sd">        Run in debug mode</span>
 <span class="sd">    name : :obj:`str`</span>
 <span class="sd">        Name for this workflow</span>
 <span class="sd">    omp_nthreads : :obj:`int`</span>
@@ -604,6 +606,7 @@
         <dl>
             <dt>Branches</dt>
             <dd><a href="../../../../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
+            <dd><a href="../../../../../enh_outputnode-method/index.html">enh/outputnode-method</a></dd>
             <dd><a href="../../../../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>

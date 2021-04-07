@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.fit.fieldmap module &mdash; sdcflows 2.0.1.dev33 documentation</title>
+  <title>sdcflows.workflows.fit.fieldmap module &mdash; sdcflows 2.0.1.dev40 documentation</title>
   
 
   
@@ -66,7 +67,7 @@
             
             
               <div class="version">
-                2.0.1.dev33
+                2.0.1.dev40
               </div>
             
           
@@ -192,10 +193,10 @@
 
 
     <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../master/api/sdcflows.workflows.fit.fieldmap.html"><b>Warning:</b> This document is for the development version of sdcflows. The main version is master.</a></p>
-<div class="section" id="module-sdcflows.workflows.fit.fieldmap">
+<section id="module-sdcflows.workflows.fit.fieldmap">
 <span id="sdcflows-workflows-fit-fieldmap-module"></span><h1>sdcflows.workflows.fit.fieldmap module<a class="headerlink" href="#module-sdcflows.workflows.fit.fieldmap" title="Permalink to this headline">¶</a></h1>
 <p>Processing phase-difference and <em>directly measured</em> <span class="math notranslate nohighlight">\(B_0\)</span> maps.</p>
-<div class="section" id="theory">
+<section id="theory">
 <h2>Theory<a class="headerlink" href="#theory" title="Permalink to this headline">¶</a></h2>
 <p>The displacement suffered by every voxel along the phase-encoding (PE) direction
 can be derived from Eq. (2) of <a class="reference internal" href="#hutton2002" id="id1"><span>[Hutton2002]</span></a>:</p>
@@ -218,15 +219,15 @@ we obtain the nonzero component of the associated displacements field
 <div class="math notranslate nohighlight">
 \[\Delta D_\text{PE} (i, j, k) = V(i, j, k) \cdot T_\text{ro} \cdot s_\text{PE}.
 \label{eq:fieldmap-2}\tag{2}\]</div>
-</div>
-<div class="section" id="direct-b0-mapping-sequences">
+</section>
+<section id="direct-b0-mapping-sequences">
 <span id="sdc-direct-b0"></span><h2>Direct B0 mapping sequences<a class="headerlink" href="#direct-b0-mapping-sequences" title="Permalink to this headline">¶</a></h2>
 <p>Some MR schemes such as <abbr title="spiral-echo imaging">SEI</abbr> can directly
 reconstruct an estimate of <em>the fieldmap in Hz</em>, <span class="math notranslate nohighlight">\(V(i,j,k)\)</span>.
 These <em>fieldmaps</em> are described with more detail <a class="reference external" href="https://cni.stanford.edu/wiki/GE_Processing#Fieldmaps">here</a>.</p>
 <p>This corresponds to <a class="reference external" href="https://bids-specification.readthedocs.io/en/latest/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#case-3-direct-field-mapping">this section of the BIDS specification</a>.</p>
-</div>
-<div class="section" id="phase-difference-b0-estimation">
+</section>
+<section id="phase-difference-b0-estimation">
 <span id="sdc-phasediff"></span><h2>Phase-difference B0 estimation<a class="headerlink" href="#phase-difference-b0-estimation" title="Permalink to this headline">¶</a></h2>
 <p>The fieldmap variation in T, <span class="math notranslate nohighlight">\(\Delta B_0 (i, j, k)\)</span>, that is necessary to obtain
 <span class="math notranslate nohighlight">\(\Delta_\text{PE} (i, j, k)\)</span> in Eq. <span class="math notranslate nohighlight">\(\eqref{eq:fieldmap-1}\)</span> can be
@@ -265,7 +266,7 @@ algorithm. MRM 49(1):193-197. doi:<a class="reference external" href="https://do
 </dl>
 <dl class="function">
 <dt id="sdcflows.workflows.fit.fieldmap.init_fmap_wf">
-<code class="sig-prename descclassname">sdcflows.workflows.fit.fieldmap.</code><code class="sig-name descname">init_fmap_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads=1</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">mode='phasediff'</em>, <em class="sig-param">name='fmap_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/fit/fieldmap.html#init_fmap_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.fit.fieldmap.init_fmap_wf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sdcflows.workflows.fit.fieldmap.</code><code class="sig-name descname">init_fmap_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads=1</em>, <em class="sig-param">sloppy=False</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">mode='phasediff'</em>, <em class="sig-param">name='fmap_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/fit/fieldmap.html#init_fmap_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.fit.fieldmap.init_fmap_wf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate the fieldmap based on a field-mapping MRI acquisition.</p>
 <p>Estimates the fieldmap using either one phase-difference map or
 image and one or more
@@ -276,9 +277,9 @@ we just need to mask it (using the corresponding magnitude image)
 to remove the noise in the surrounding air region, and ensure that
 units are Hz.</p>
 <dl>
-<dt>Workflow Graph</dt><dd><div class="figure align-default">
+<dt>Workflow Graph</dt><dd><figure class="align-default">
 <img alt="../_images/sdcflows-workflows-fit-fieldmap-1.png" src="../_images/sdcflows-workflows-fit-fieldmap-1.png" />
-</div>
+</figure>
 <p>(<a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-1.py">Source code</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-1.png">png</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-1.svg">svg</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-1.pdf">pdf</a>)</p>
 </dd>
 </dl>
@@ -286,7 +287,8 @@ units are Hz.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of threads an individual process may use.</p></li>
-<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Run on debug mode</p></li>
+<li><p><strong>sloppy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether a fast but less accurate correction should be applied.</p></li>
+<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Run in debug mode</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Unique name of this workflow.</p></li>
 </ul>
 </dd>
@@ -317,9 +319,9 @@ pair.</p></li>
 correct for B1 field nonuniformity, and skull-strip the
 preprocessed magnitude.</p>
 <dl>
-<dt>Workflow Graph</dt><dd><div class="figure align-default">
+<dt>Workflow Graph</dt><dd><figure class="align-default">
 <img alt="../_images/sdcflows-workflows-fit-fieldmap-2.png" src="../_images/sdcflows-workflows-fit-fieldmap-2.png" />
-</div>
+</figure>
 <p>(<a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-2.py">Source code</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-2.png">png</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-2.svg">svg</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-2.pdf">pdf</a>)</p>
 </dd>
 </dl>
@@ -359,9 +361,9 @@ After some massaging and with the scaling of the echo separation factor
 <span class="math notranslate nohighlight">\(\Delta \text{TE}\)</span>, the phase-difference maps are converted into
 an actual <span class="math notranslate nohighlight">\(B_0\)</span> map in Hz units.</p>
 <dl>
-<dt>Workflow Graph</dt><dd><div class="figure align-default">
+<dt>Workflow Graph</dt><dd><figure class="align-default">
 <img alt="../_images/sdcflows-workflows-fit-fieldmap-3.png" src="../_images/sdcflows-workflows-fit-fieldmap-3.png" />
-</div>
+</figure>
 <p>(<a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-3.py">Source code</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-3.png">png</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-3.svg">svg</a>, <a class="reference external" href="../api/sdcflows-workflows-fit-fieldmap-3.pdf">pdf</a>)</p>
 </dd>
 </dl>
@@ -369,7 +371,7 @@ an actual <span class="math notranslate nohighlight">\(B_0\)</span> map in Hz un
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of threads an individual process may use</p></li>
-<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Run on debug mode</p></li>
+<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Run in debug mode</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of workflow (default: <code class="docutils literal notranslate"><span class="pre">phdiff_wf</span></code>)</p></li>
 </ul>
 </dd>
@@ -388,8 +390,8 @@ subsequent echoes, with their metadata (requires <code class="docutils literal n
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -464,6 +466,7 @@ subsequent echoes, with their metadata (requires <code class="docutils literal n
         <dl>
             <dt>Branches</dt>
             <dd><a href="sdcflows.workflows.fit.fieldmap.html">dev/1.4.0</a></dd>
+            <dd><a href="../../enh_outputnode-method/api/sdcflows.workflows.fit.fieldmap.html">enh/outputnode-method</a></dd>
             <dd><a href="../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../maint_1.2.x/index.html">maint/1.2.x</a></dd>

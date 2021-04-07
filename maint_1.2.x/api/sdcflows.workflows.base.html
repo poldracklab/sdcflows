@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.base module &mdash; sdcflows 2.0.1.dev33 documentation</title>
+  <title>sdcflows.workflows.base module &mdash; sdcflows 2.0.1.dev40 documentation</title>
   
 
   
@@ -65,7 +66,7 @@
             
             
               <div class="version">
-                2.0.1.dev33
+                2.0.1.dev40
               </div>
             
           
@@ -192,12 +193,12 @@
 
 
     <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../master/api/sdcflows.workflows.base.html"><b>Warning:</b> This document is for the development version of sdcflows. The main version is master.</a></p>
-<div class="section" id="module-sdcflows.workflows.base">
+<section id="module-sdcflows.workflows.base">
 <span id="sdcflows-workflows-base-module"></span><h1>sdcflows.workflows.base module<a class="headerlink" href="#module-sdcflows.workflows.base" title="Permalink to this headline">¶</a></h1>
 <p>Estimate fieldmaps for <abbr title="susceptibility distortion correction">SDC</abbr>.</p>
 <dl class="function">
 <dt id="sdcflows.workflows.base.init_fmap_preproc_wf">
-<code class="sig-prename descclassname">sdcflows.workflows.base.</code><code class="sig-name descname">init_fmap_preproc_wf</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">estimators</em>, <em class="sig-param">omp_nthreads</em>, <em class="sig-param">output_dir</em>, <em class="sig-param">subject</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">name='fmap_preproc_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/base.html#init_fmap_preproc_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.base.init_fmap_preproc_wf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sdcflows.workflows.base.</code><code class="sig-name descname">init_fmap_preproc_wf</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">estimators</em>, <em class="sig-param">omp_nthreads</em>, <em class="sig-param">output_dir</em>, <em class="sig-param">subject</em>, <em class="sig-param">sloppy=False</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">name='fmap_preproc_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/base.html#init_fmap_preproc_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.base.init_fmap_preproc_wf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and combine estimator workflows.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -207,6 +208,7 @@
 <li><p><strong>output_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Directory in which to save derivatives</p></li>
 <li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Participant label for this single-subject workflow.</p></li>
 <li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Enable debugging outputs</p></li>
+<li><p><strong>sloppy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Enable faster but less precise calculations</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Workflow name (default: <code class="docutils literal notranslate"><span class="pre">&quot;fmap_preproc_wf&quot;</span></code>)</p></li>
 </ul>
 </dd>
@@ -223,7 +225,7 @@
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
@@ -298,6 +300,7 @@
         <dl>
             <dt>Branches</dt>
             <dd><a href="../../dev_1.4.0/api/sdcflows.workflows.base.html">dev/1.4.0</a></dd>
+            <dd><a href="../../enh_outputnode-method/api/sdcflows.workflows.base.html">enh/outputnode-method</a></dd>
             <dd><a href="../../feat_new-api/api/sdcflows.workflows.base.html">feat/new-api</a></dd>
             <dd><a href="../../maint_1.0.x/api/sdcflows.workflows.base.html">maint/1.0.x</a></dd>
             <dd><a href="sdcflows.workflows.base.html">maint/1.2.x</a></dd>
