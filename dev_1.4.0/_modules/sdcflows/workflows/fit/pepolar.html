@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.fit.pepolar &mdash; sdcflows 2.0.1.dev40 documentation</title>
+  <title>sdcflows.workflows.fit.pepolar &mdash; sdcflows 2.0.1.dev43 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev40
+                2.0.1.dev43
               </div>
             
           
@@ -234,6 +234,8 @@
 <span class="sd">        The path of mask corresponding to the ``fmap_ref`` output.</span>
 <span class="sd">    fmap_coeff : :obj:`str` or :obj:`list` of :obj:`str`</span>
 <span class="sd">        The path(s) of the B-Spline coefficients supporting the fieldmap.</span>
+<span class="sd">    method: :obj:`str`</span>
+<span class="sd">        Short description of the estimation method that was run.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">nipype.interfaces.fsl.epi</span> <span class="kn">import</span> <span class="n">TOPUP</span>
@@ -261,10 +263,12 @@
                 <span class="s2">&quot;jacobians&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;xfms&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;out_warps&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;method&quot;</span><span class="p">,</span>
             <span class="p">]</span>
         <span class="p">),</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;outputnode&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;PEB/PEPOLAR (phase-encoding based / PE-POLARity)&quot;</span>
 
     <span class="n">flatten</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">Flatten</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;flatten&quot;</span><span class="p">)</span>
     <span class="n">concat_blips</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">MergeSeries</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;concat_blips&quot;</span><span class="p">)</span>

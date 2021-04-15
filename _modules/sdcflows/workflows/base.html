@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.base &mdash; sdcflows 2.0.1.dev40 documentation</title>
+  <title>sdcflows.workflows.base &mdash; sdcflows 2.0.1.dev43 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev40
+                2.0.1.dev43
               </div>
             
           
@@ -234,7 +234,7 @@
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="n">out_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_coeff&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_id&quot;</span><span class="p">)</span>
+    <span class="n">out_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_coeff&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_id&quot;</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">)</span>
     <span class="n">out_merge</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">f</span><span class="p">:</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">estimators</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;out_merge_</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">out_fields</span>
@@ -311,6 +311,7 @@
                 <span class="p">(</span><span class="s2">&quot;outputnode.fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">),</span>
                 <span class="p">(</span><span class="s2">&quot;outputnode.fmap_coeff&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_coeff&quot;</span><span class="p">),</span>
                 <span class="p">(</span><span class="s2">&quot;outputnode.fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;outputnode.method&quot;</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">)</span>
             <span class="p">]),</span>
         <span class="p">])</span>
         <span class="c1"># fmt:on</span>
