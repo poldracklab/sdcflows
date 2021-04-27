@@ -304,6 +304,85 @@ with `3dQwarp` (@afni; AFNI {''.join(['%02d' % v for v in afni.Info().version() 
     return workflow
 
 
+def init_prepare_blips_wf(*, omp_nthreads=1, orthogonal=True, name="prepare_blips_wf"):
+    """
+    Prepare fieldmaps for PEPOLAR correction.
+
+    This workflow takes in two or four EPI files.
+
+    Parameters
+    ----------
+    orthogonal : :obj:`bool`
+    name : :obj:`str`
+        Name for this workflow
+
+
+    Inputs
+    ------
+    epi_files : :obj:`list` of :obj:`str`
+        A list of two or four EPI files, the first of which will be taken as reference.
+
+    Outputs
+    -------
+    """
+    # TODO: black
+    import pkg_resources as pkgr
+    from niworkflows.interfaces.fixes import FixHeaderRegistration as Registration
+    from niworkflows.interfaces.freesurfer import StructuralReference
+    from niworkflows.interfaces.nibabel import MergeSeries
+    from ...interfaces.utils import Flatten
+
+    inputnode = pe.Node(niu.IdentityInterface(fields=["epi_files"]), name='inputnode')
+    outputnode = pe.Node(niu.IdentityInterface(fields=["reg_blips"], name="outputnode"))
+
+    flatten = pe.MapNode(Flatten(), name='flatten')
+    gen_pe_refs = pe.MapNode(
+        StructuralReference(
+            auto_detect_sensitivity=True,
+            initial_timepoint=1,
+            fixed_timepoint=True,  # Align to first image
+            intensity_scaling=True,
+            # 7-DOF (rigid + intensity)
+            no_iteration=True,
+            subsample_threshold=200,
+            out_file='template.nii.gz'
+        ),
+        iterfield=['in_files'],
+        name='gen_pe_refs',
+    )
+    get_reg_files = pe.Node(
+        niu.Function(function=_separate_first, output_names=["ref_image", "blips"]),
+        name='get_reg_files'
+    )
+
+    reg_settings = pkgr.resource_filename('sdcflows', 'data/translation_rigid.json')
+    reg_blips = pe.MapNode(
+        Registration(from_file=reg_settings, output_warped_image=True),
+        name='reg_blips',
+        iterfield=["moving_image"],
+        n_procs=omp_nthreads
+    )
+
+    concat_blips = pe.Node(niu.Merge(2), name='concat_blips')
+    merge_blips = pe.Node(MergeSeries(), name="merge_blips")
+
+    workflow = Workflow(name=name)
+    # fmt: off
+    workflow.connect([
+        (inputnode, flatten, [("epi_files", "in_data")]),
+        (flatten, gen_pe_refs, [("out_list", "in_files")]),
+        (gen_pe_refs, get_reg_files, [("out_file", "in_files")]),
+        (get_reg_files, reg_blips, [("ref_image", "fixed_image"),
+                                    ("blips", "moving_image")]),
+        (get_reg_files, concat_blips, [("ref_image", "in1")]),
+        (reg_blips, concat_blips, [("warped_image", "in2")]),
+        (concat_blips, merge_blips, [("out", "in_files")]),
+        (merge_blips, outputnode, [("out_file", 'merged_blips')]),
+    ])
+    # fmt: on
+    return workflow
+
+
 def _pe2fsl(metadata):
     """
     Convert ijk notation to xyz.
@@ -373,3 +452,10 @@ def _sorted_pe(inlist):
             ref_pe[0]
         ],
     )
+
+
+def _separate_first(in_files):
+    """Take in a list of files and separate the first from the rest"""
+    # TODO: check for best resolution image?
+    files = list(in_files)
+    return files[0], files[1:]
