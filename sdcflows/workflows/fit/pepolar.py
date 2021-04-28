@@ -100,19 +100,9 @@ def init_topup_wf(omp_nthreads=1, sloppy=False, debug=False, name="pepolar_estim
     )
     outputnode.inputs.method = "PEB/PEPOLAR (phase-encoding based / PE-POLARity)"
 
-    flatten = pe.Node(Flatten(), name="flatten")
-    concat_blips = pe.Node(MergeSeries(), name="concat_blips")
-    readout_time = pe.MapNode(
-        GetReadoutTime(),
-        name="readout_time",
-        iterfield=["metadata", "in_file"],
-        run_without_submitting=True,
-    )
-
+    prepare_blips_wf = init_prepare_blips_wf(omp_nthreads=omp_nthreads, get_readout=True)
     topup = pe.Node(
-        TOPUP(
-            config=_pkg_fname("sdcflows", f"data/flirtsch/b02b0{'_quick' * debug}.cnf")
-        ),
+        TOPUP(config=_pkg_fname("sdcflows", f"data/flirtsch/b02b0{'_quick' * debug}.cnf")),
         name="topup",
     )
     merge_corrected = pe.Node(
@@ -127,14 +117,13 @@ def init_topup_wf(omp_nthreads=1, sloppy=False, debug=False, name="pepolar_estim
 
     # fmt: off
     workflow.connect([
-        (inputnode, flatten, [("in_data", "in_data"),
-                              ("metadata", "in_meta")]),
-        (flatten, readout_time, [("out_data", "in_file"),
-                                 ("out_meta", "metadata")]),
-        (flatten, concat_blips, [("out_data", "in_files")]),
-        (flatten, topup, [(("out_meta", _pe2fsl), "encoding_direction")]),
-        (readout_time, topup, [("readout_time", "readout_times")]),
-        (concat_blips, topup, [("out_file", "in_file")]),
+        (inputnode, prepare_blips_wf, [
+            ("in_data", "inputnode.epi_files"),
+            ("metadata", "inputnode.metadata")]),
+        (inputnode, topup, [(("metadata", _pe2fsl), "encoding_direction")]),
+        (prepare_blips_wf, topup, [
+            ("outputnode.reg_blips", "in_file"),
+            ("outputnode.readout_times", "readout_times")]),
         (topup, merge_corrected, [("out_corrected", "in_files")]),
         (topup, fix_coeff, [("out_fieldcoef", "in_coeff"),
                             ("out_corrected", "fmap_ref")]),
@@ -304,7 +293,7 @@ with `3dQwarp` (@afni; AFNI {''.join(['%02d' % v for v in afni.Info().version() 
     return workflow
 
 
-def init_prepare_blips_wf(*, omp_nthreads=1, orthogonal=True, name="prepare_blips_wf"):
+def init_prepare_blips_wf(*, omp_nthreads=1, get_readout=True, name="prepare_blips_wf"):
     """
     Prepare fieldmaps for PEPOLAR correction.
 
@@ -312,7 +301,7 @@ def init_prepare_blips_wf(*, omp_nthreads=1, orthogonal=True, name="prepare_blip
 
     Parameters
     ----------
-    orthogonal : :obj:`bool`
+    omp_nthreads : :obj:`int`
     name : :obj:`str`
         Name for this workflow
 
@@ -327,29 +316,49 @@ def init_prepare_blips_wf(*, omp_nthreads=1, orthogonal=True, name="prepare_blip
     """
     # TODO: black
     import pkg_resources as pkgr
+    from nipype.interfaces.ants.segmentation import N4BiasFieldCorrection
     from niworkflows.interfaces.fixes import FixHeaderRegistration as Registration
     from niworkflows.interfaces.freesurfer import StructuralReference
     from niworkflows.interfaces.nibabel import MergeSeries
     from ...interfaces.utils import Flatten
 
-    inputnode = pe.Node(niu.IdentityInterface(fields=["epi_files"]), name='inputnode')
-    outputnode = pe.Node(niu.IdentityInterface(fields=["reg_blips"], name="outputnode"))
+    inputnode = pe.Node(
+        niu.IdentityInterface(fields=["epi_files", "metadata"]),
+        name='inputnode'
+    )
+    outputnode = pe.Node(
+        niu.IdentityInterface(fields=["reg_blips", "readout_times"]),
+        name="outputnode"
+    )
 
-    flatten = pe.MapNode(Flatten(), name='flatten')
+    flatten = pe.MapNode(Flatten(), name='flatten', iterfield=["in_data", "in_meta"])
     gen_pe_refs = pe.MapNode(
         StructuralReference(
             auto_detect_sensitivity=True,
             initial_timepoint=1,
             fixed_timepoint=True,  # Align to first image
-            intensity_scaling=True,
-            # 7-DOF (rigid + intensity)
+            intensity_scaling=True,  # 7-DOF (rigid + intensity)
             no_iteration=True,
             subsample_threshold=200,
-            out_file='template.nii.gz'
+            transform_outputs=True,
+            out_file='template.nii.gz',
         ),
         iterfield=['in_files'],
         name='gen_pe_refs',
     )
+    n4_refs = pe.MapNode(
+        N4BiasFieldCorrection(
+            dimension=3,
+            copy_header=True,
+            n_iterations=[50] * 5,
+            convergence_threshold=1e-7,
+            shrink_factor=4,
+        ),
+        n_procs=omp_nthreads,
+        name="n4_refs",
+        iterfield=["input_image"],
+    )
+
     get_reg_files = pe.Node(
         niu.Function(function=_separate_first, output_names=["ref_image", "blips"]),
         name='get_reg_files'
@@ -369,17 +378,37 @@ def init_prepare_blips_wf(*, omp_nthreads=1, orthogonal=True, name="prepare_blip
     workflow = Workflow(name=name)
     # fmt: off
     workflow.connect([
-        (inputnode, flatten, [("epi_files", "in_data")]),
-        (flatten, gen_pe_refs, [("out_list", "in_files")]),
-        (gen_pe_refs, get_reg_files, [("out_file", "in_files")]),
+        (inputnode, flatten, [
+            ("epi_files", "in_data"),
+            ("metadata", "in_meta")]),
+        (flatten, gen_pe_refs, [("out_data", "in_files")]),
+        (gen_pe_refs, n4_refs, [("out_file", "input_image")]),
+        (n4_refs, get_reg_files, [("output_image", "in_files")]),
         (get_reg_files, reg_blips, [("ref_image", "fixed_image"),
                                     ("blips", "moving_image")]),
         (get_reg_files, concat_blips, [("ref_image", "in1")]),
         (reg_blips, concat_blips, [("warped_image", "in2")]),
         (concat_blips, merge_blips, [("out", "in_files")]),
-        (merge_blips, outputnode, [("out_file", 'merged_blips')]),
+        (merge_blips, outputnode, [("out_file", 'reg_blips')]),
     ])
     # fmt: on
+    if get_readout:
+        from ...interfaces.epi import GetReadoutTime
+
+        get_ro = pe.MapNode(
+            GetReadoutTime(),
+            name='get_ro',
+            iterfield=["metadata", "in_file"],
+            run_without_submitting=True,
+        )
+        # fmt: off
+        workflow.connect([
+            (inputnode, get_ro, [
+                ("epi_files", "in_file"),
+                ("metadata", "metadata")]),
+            (get_ro, outputnode, [("readout_time", "readout_times")]),
+        ])
+        # fmt: on
     return workflow
 
 
@@ -457,5 +486,6 @@ def _sorted_pe(inlist):
 def _separate_first(in_files):
     """Take in a list of files and separate the first from the rest"""
     # TODO: check for best resolution image?
-    files = list(in_files)
-    return files[0], files[1:]
+    if isinstance(in_files, (list, tuple)):
+        return in_files[0], in_files[1:]
+    raise RuntimeError(f"Expected an iterable but given {in_files}")
