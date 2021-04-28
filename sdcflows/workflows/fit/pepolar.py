@@ -23,7 +23,9 @@ A *B<sub>0</sub>*-nonuniformity map (or *fieldmap*) was estimated based on two (
 echo-planar imaging (EPI) references """
 
 
-def init_topup_wf(omp_nthreads=1, sloppy=False, debug=False, name="pepolar_estimate_wf"):
+def init_topup_wf(
+    omp_nthreads=1, sloppy=False, debug=False, name="pepolar_estimate_wf"
+):
     """
     Create the PEPOLAR field estimation workflow based on FSL's ``topup``.
 
@@ -100,9 +102,18 @@ def init_topup_wf(omp_nthreads=1, sloppy=False, debug=False, name="pepolar_estim
     )
     outputnode.inputs.method = "PEB/PEPOLAR (phase-encoding based / PE-POLARity)"
 
-    prepare_blips_wf = init_prepare_blips_wf(omp_nthreads=omp_nthreads, get_readout=True)
+    prepare_blips_wf = init_prepare_blips_wf(omp_nthreads=omp_nthreads)
+    get_ro = pe.MapNode(
+        GetReadoutTime(),
+        name="get_ro",
+        iterfield=["metadata", "in_file"],
+        run_without_submitting=True,
+    )
+
     topup = pe.Node(
-        TOPUP(config=_pkg_fname("sdcflows", f"data/flirtsch/b02b0{'_quick' * debug}.cnf")),
+        TOPUP(
+            config=_pkg_fname("sdcflows", f"data/flirtsch/b02b0{'_quick' * debug}.cnf")
+        ),
         name="topup",
     )
     merge_corrected = pe.Node(
@@ -120,10 +131,13 @@ def init_topup_wf(omp_nthreads=1, sloppy=False, debug=False, name="pepolar_estim
         (inputnode, prepare_blips_wf, [
             ("in_data", "inputnode.epi_files"),
             ("metadata", "inputnode.metadata")]),
+        (inputnode, get_ro, [
+            ("in_data", "in_file"),
+            ("metadata", "metadata")]),
         (inputnode, topup, [(("metadata", _pe2fsl), "encoding_direction")]),
+        (get_ro, topup, [("readout_time", "readout_times")]),
         (prepare_blips_wf, topup, [
-            ("outputnode.reg_blips", "in_file"),
-            ("outputnode.readout_times", "readout_times")]),
+            ("outputnode.reg_blips", "in_file")]),
         (topup, merge_corrected, [("out_corrected", "in_files")]),
         (topup, fix_coeff, [("out_fieldcoef", "in_coeff"),
                             ("out_corrected", "fmap_ref")]),
@@ -293,7 +307,7 @@ with `3dQwarp` (@afni; AFNI {''.join(['%02d' % v for v in afni.Info().version() 
     return workflow
 
 
-def init_prepare_blips_wf(*, omp_nthreads=1, get_readout=True, name="prepare_blips_wf"):
+def init_prepare_blips_wf(*, omp_nthreads=1, name="prepare_blips_wf"):
     """
     Prepare fieldmaps for PEPOLAR correction.
 
@@ -302,6 +316,7 @@ def init_prepare_blips_wf(*, omp_nthreads=1, get_readout=True, name="prepare_bli
     Parameters
     ----------
     omp_nthreads : :obj:`int`
+        Parallelize internal tasks across the number of CPUs given by this option.
     name : :obj:`str`
         Name for this workflow
 
@@ -310,11 +325,16 @@ def init_prepare_blips_wf(*, omp_nthreads=1, get_readout=True, name="prepare_bli
     ------
     epi_files : :obj:`list` of :obj:`str`
         A list of two or four EPI files, the first of which will be taken as reference.
+    metadata : obj:`list` of :obj:`dict`
+        A list of dictionaries containing the metadata corresponding to each file
+        in ``epi_files``.
 
     Outputs
     -------
+    reg_blips : :obj:`str`
+        A 4D file containing one volume per phase-encoding direction
+
     """
-    # TODO: black
     import pkg_resources as pkgr
     from nipype.interfaces.ants.segmentation import N4BiasFieldCorrection
     from niworkflows.interfaces.fixes import FixHeaderRegistration as Registration
@@ -323,15 +343,13 @@ def init_prepare_blips_wf(*, omp_nthreads=1, get_readout=True, name="prepare_bli
     from ...interfaces.utils import Flatten
 
     inputnode = pe.Node(
-        niu.IdentityInterface(fields=["epi_files", "metadata"]),
-        name='inputnode'
+        niu.IdentityInterface(fields=["epi_files", "metadata"]), name="inputnode"
     )
     outputnode = pe.Node(
-        niu.IdentityInterface(fields=["reg_blips", "readout_times"]),
-        name="outputnode"
+        niu.IdentityInterface(fields=["reg_blips", "readout_times"]), name="outputnode"
     )
 
-    flatten = pe.MapNode(Flatten(), name='flatten', iterfield=["in_data", "in_meta"])
+    flatten = pe.MapNode(Flatten(), name="flatten", iterfield=["in_data", "in_meta"])
     gen_pe_refs = pe.MapNode(
         StructuralReference(
             auto_detect_sensitivity=True,
@@ -341,10 +359,10 @@ def init_prepare_blips_wf(*, omp_nthreads=1, get_readout=True, name="prepare_bli
             no_iteration=True,
             subsample_threshold=200,
             transform_outputs=True,
-            out_file='template.nii.gz',
+            out_file="template.nii.gz",
         ),
-        iterfield=['in_files'],
-        name='gen_pe_refs',
+        iterfield=["in_files"],
+        name="gen_pe_refs",
     )
     n4_refs = pe.MapNode(
         N4BiasFieldCorrection(
@@ -361,18 +379,18 @@ def init_prepare_blips_wf(*, omp_nthreads=1, get_readout=True, name="prepare_bli
 
     get_reg_files = pe.Node(
         niu.Function(function=_separate_first, output_names=["ref_image", "blips"]),
-        name='get_reg_files'
+        name="get_reg_files",
     )
 
-    reg_settings = pkgr.resource_filename('sdcflows', 'data/translation_rigid.json')
+    reg_settings = pkgr.resource_filename("sdcflows", "data/translation_rigid.json")
     reg_blips = pe.MapNode(
         Registration(from_file=reg_settings, output_warped_image=True),
-        name='reg_blips',
+        name="reg_blips",
         iterfield=["moving_image"],
-        n_procs=omp_nthreads
+        n_procs=omp_nthreads,
     )
 
-    concat_blips = pe.Node(niu.Merge(2), name='concat_blips')
+    concat_blips = pe.Node(niu.Merge(2), name="concat_blips")
     merge_blips = pe.Node(MergeSeries(), name="merge_blips")
 
     workflow = Workflow(name=name)
@@ -391,24 +409,6 @@ def init_prepare_blips_wf(*, omp_nthreads=1, get_readout=True, name="prepare_bli
         (concat_blips, merge_blips, [("out", "in_files")]),
         (merge_blips, outputnode, [("out_file", 'reg_blips')]),
     ])
-    # fmt: on
-    if get_readout:
-        from ...interfaces.epi import GetReadoutTime
-
-        get_ro = pe.MapNode(
-            GetReadoutTime(),
-            name='get_ro',
-            iterfield=["metadata", "in_file"],
-            run_without_submitting=True,
-        )
-        # fmt: off
-        workflow.connect([
-            (inputnode, get_ro, [
-                ("epi_files", "in_file"),
-                ("metadata", "metadata")]),
-            (get_ro, outputnode, [("readout_time", "readout_times")]),
-        ])
-        # fmt: on
     return workflow
 
 
