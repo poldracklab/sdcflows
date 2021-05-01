@@ -23,7 +23,9 @@ A *B<sub>0</sub>*-nonuniformity map (or *fieldmap*) was estimated based on two (
 echo-planar imaging (EPI) references """
 
 
-def init_topup_wf(omp_nthreads=1, sloppy=False, debug=False, name="pepolar_estimate_wf"):
+def init_topup_wf(
+    omp_nthreads=1, sloppy=False, debug=False, name="pepolar_estimate_wf"
+):
     """
     Create the PEPOLAR field estimation workflow based on FSL's ``topup``.
 
@@ -100,11 +102,10 @@ def init_topup_wf(omp_nthreads=1, sloppy=False, debug=False, name="pepolar_estim
     )
     outputnode.inputs.method = "PEB/PEPOLAR (phase-encoding based / PE-POLARity)"
 
-    flatten = pe.Node(Flatten(), name="flatten")
-    concat_blips = pe.Node(MergeSeries(), name="concat_blips")
-    readout_time = pe.MapNode(
+    prepare_blips_wf = init_prepare_blips_wf(omp_nthreads=omp_nthreads)
+    get_ro = pe.MapNode(
         GetReadoutTime(),
-        name="readout_time",
+        name="get_ro",
         iterfield=["metadata", "in_file"],
         run_without_submitting=True,
     )
@@ -127,14 +128,16 @@ def init_topup_wf(omp_nthreads=1, sloppy=False, debug=False, name="pepolar_estim
 
     # fmt: off
     workflow.connect([
-        (inputnode, flatten, [("in_data", "in_data"),
-                              ("metadata", "in_meta")]),
-        (flatten, readout_time, [("out_data", "in_file"),
-                                 ("out_meta", "metadata")]),
-        (flatten, concat_blips, [("out_data", "in_files")]),
-        (flatten, topup, [(("out_meta", _pe2fsl), "encoding_direction")]),
-        (readout_time, topup, [("readout_time", "readout_times")]),
-        (concat_blips, topup, [("out_file", "in_file")]),
+        (inputnode, prepare_blips_wf, [
+            ("in_data", "inputnode.epi_files"),
+            ("metadata", "inputnode.metadata")]),
+        (inputnode, get_ro, [
+            ("in_data", "in_file"),
+            ("metadata", "metadata")]),
+        (inputnode, topup, [(("metadata", _pe2fsl), "encoding_direction")]),
+        (get_ro, topup, [("readout_time", "readout_times")]),
+        (prepare_blips_wf, topup, [
+            ("outputnode.reg_blips", "in_file")]),
         (topup, merge_corrected, [("out_corrected", "in_files")]),
         (topup, fix_coeff, [("out_fieldcoef", "in_coeff"),
                             ("out_corrected", "fmap_ref")]),
@@ -304,6 +307,111 @@ with `3dQwarp` (@afni; AFNI {''.join(['%02d' % v for v in afni.Info().version() 
     return workflow
 
 
+def init_prepare_blips_wf(*, omp_nthreads=1, name="prepare_blips_wf"):
+    """
+    Prepare fieldmaps for PEPOLAR correction.
+
+    This workflow takes in two or four EPI files.
+
+    Parameters
+    ----------
+    omp_nthreads : :obj:`int`
+        Parallelize internal tasks across the number of CPUs given by this option.
+    name : :obj:`str`
+        Name for this workflow
+
+
+    Inputs
+    ------
+    epi_files : :obj:`list` of :obj:`str`
+        A list of two or four EPI files, the first of which will be taken as reference.
+    metadata : obj:`list` of :obj:`dict`
+        A list of dictionaries containing the metadata corresponding to each file
+        in ``epi_files``.
+
+    Outputs
+    -------
+    reg_blips : :obj:`str`
+        A 4D file containing one volume per phase-encoding direction
+
+    """
+    import pkg_resources as pkgr
+    from nipype.interfaces.ants.segmentation import N4BiasFieldCorrection
+    from niworkflows.interfaces.fixes import FixHeaderRegistration as Registration
+    from niworkflows.interfaces.freesurfer import StructuralReference
+    from niworkflows.interfaces.nibabel import MergeSeries
+    from ...interfaces.utils import Flatten
+
+    inputnode = pe.Node(
+        niu.IdentityInterface(fields=["epi_files", "metadata"]), name="inputnode"
+    )
+    outputnode = pe.Node(
+        niu.IdentityInterface(fields=["reg_blips", "readout_times"]), name="outputnode"
+    )
+
+    flatten = pe.MapNode(Flatten(), name="flatten", iterfield=["in_data", "in_meta"])
+    gen_pe_refs = pe.MapNode(
+        StructuralReference(
+            auto_detect_sensitivity=True,
+            initial_timepoint=1,
+            fixed_timepoint=True,  # Align to first image
+            intensity_scaling=True,  # 7-DOF (rigid + intensity)
+            no_iteration=True,
+            subsample_threshold=200,
+            transform_outputs=True,
+            out_file="template.nii.gz",
+        ),
+        iterfield=["in_files"],
+        name="gen_pe_refs",
+    )
+    n4_refs = pe.MapNode(
+        N4BiasFieldCorrection(
+            dimension=3,
+            copy_header=True,
+            n_iterations=[50] * 5,
+            convergence_threshold=1e-7,
+            shrink_factor=4,
+        ),
+        n_procs=omp_nthreads,
+        name="n4_refs",
+        iterfield=["input_image"],
+    )
+
+    get_reg_files = pe.Node(
+        niu.Function(function=_separate_first, output_names=["ref_image", "blips"]),
+        name="get_reg_files",
+    )
+
+    reg_settings = pkgr.resource_filename("sdcflows", "data/translation_rigid.json")
+    reg_blips = pe.MapNode(
+        Registration(from_file=reg_settings, output_warped_image=True),
+        name="reg_blips",
+        iterfield=["moving_image"],
+        n_procs=omp_nthreads,
+    )
+
+    concat_blips = pe.Node(niu.Merge(2), name="concat_blips")
+    merge_blips = pe.Node(MergeSeries(), name="merge_blips")
+
+    workflow = Workflow(name=name)
+    # fmt: off
+    workflow.connect([
+        (inputnode, flatten, [
+            ("epi_files", "in_data"),
+            ("metadata", "in_meta")]),
+        (flatten, gen_pe_refs, [("out_data", "in_files")]),
+        (gen_pe_refs, n4_refs, [("out_file", "input_image")]),
+        (n4_refs, get_reg_files, [("output_image", "in_files")]),
+        (get_reg_files, reg_blips, [("ref_image", "fixed_image"),
+                                    ("blips", "moving_image")]),
+        (get_reg_files, concat_blips, [("ref_image", "in1")]),
+        (reg_blips, concat_blips, [("warped_image", "in2")]),
+        (concat_blips, merge_blips, [("out", "in_files")]),
+        (merge_blips, outputnode, [("out_file", 'reg_blips')]),
+    ])
+    return workflow
+
+
 def _pe2fsl(metadata):
     """
     Convert ijk notation to xyz.
@@ -373,3 +481,11 @@ def _sorted_pe(inlist):
             ref_pe[0]
         ],
     )
+
+
+def _separate_first(in_files):
+    """Take in a list of files and separate the first from the rest"""
+    # TODO: check for best resolution image?
+    if isinstance(in_files, (list, tuple)):
+        return in_files[0], in_files[1:]
+    raise RuntimeError(f"Expected an iterable but given {in_files}")
