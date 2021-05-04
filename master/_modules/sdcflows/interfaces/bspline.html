@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.interfaces.bspline &mdash; sdcflows 2.0.1.dev44 documentation</title>
+  <title>sdcflows.interfaces.bspline &mdash; sdcflows 2.0.1.dev48 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev44
+                2.0.1.dev48
               </div>
             
           
@@ -169,9 +169,11 @@
 <span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
 <span class="sd">&quot;&quot;&quot;Filtering of :math:`B_0` field mappings with B-Splines.&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">nibabel</span> <span class="k">as</span> <span class="nn">nb</span>
-<span class="kn">from</span> <span class="nn">nibabel.affines</span> <span class="kn">import</span> <span class="n">apply_affine</span>
+<span class="kn">from</span> <span class="nn">nibabel.affines</span> <span class="kn">import</span> <span class="n">apply_affine</span><span class="p">,</span> <span class="n">obliquity</span><span class="p">,</span> <span class="n">voxel_sizes</span>
+<span class="kn">from</span> <span class="nn">nibabel.orientations</span> <span class="kn">import</span> <span class="n">io_orientation</span>
 
 <span class="kn">from</span> <span class="nn">nipype</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">nipype.utils.filemanip</span> <span class="kn">import</span> <span class="n">fname_presuffix</span>
@@ -431,10 +433,10 @@
         <span class="p">)</span>
 
         <span class="c1"># Generate warp field</span>
-        <span class="n">phaseEncDim</span> <span class="o">=</span> <span class="s2">&quot;ijk&quot;</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">pe_dir</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">phaseEncSign</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">pe_dir</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">]</span>
-
-        <span class="n">data</span> <span class="o">*=</span> <span class="n">phaseEncSign</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ro_time</span>
+        <span class="n">pe_axis</span> <span class="o">=</span> <span class="s2">&quot;ijk&quot;</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">pe_dir</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">pe_sign</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">pe_dir</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="mf">1.0</span>
+        <span class="n">pe_size</span> <span class="o">=</span> <span class="n">targetnii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get_zooms</span><span class="p">()[</span><span class="n">pe_axis</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">*=</span> <span class="n">pe_sign</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ro_time</span> <span class="o">*</span> <span class="n">pe_size</span>
 
         <span class="n">fieldshape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="o">+</span> <span class="p">[</span><span class="mi">3</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;out_warp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span>
@@ -442,13 +444,17 @@
         <span class="p">)</span>
         <span class="c1"># Compose a vector field</span>
         <span class="n">field</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-        <span class="n">field</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">phaseEncDim</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">aff</span> <span class="o">=</span> <span class="n">targetnii</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">aff</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="c1"># Multiplying by the affine implicitly applies the voxel size to the shift map</span>
-        <span class="n">field</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">affines</span><span class="o">.</span><span class="n">apply_affine</span><span class="p">(</span><span class="n">aff</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">fieldshape</span><span class="p">)</span>
+        <span class="n">field</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">pe_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># If coordinate system is oblique, project displacements through directions matrix</span>
+        <span class="n">aff</span> <span class="o">=</span> <span class="n">targetnii</span><span class="o">.</span><span class="n">affine</span>
+        <span class="k">if</span> <span class="n">obliquity</span><span class="p">(</span><span class="n">aff</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">pi</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>
+            <span class="n">dirmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+            <span class="n">dirmat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">aff</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">voxel_sizes</span><span class="p">(</span><span class="n">aff</span><span class="p">)</span> <span class="o">*</span> <span class="n">io_orientation</span><span class="p">(</span><span class="n">aff</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">affines</span><span class="o">.</span><span class="n">apply_affine</span><span class="p">(</span><span class="n">dirmat</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+
         <span class="n">warpnii</span> <span class="o">=</span> <span class="n">targetnii</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
-            <span class="n">field</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">targetnii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">fieldshape</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:],</span> <span class="n">targetnii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="n">warpnii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">set_intent</span><span class="p">(</span><span class="s2">&quot;vector&quot;</span><span class="p">,</span> <span class="p">(),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">warpnii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">set_xyzt_units</span><span class="p">(</span><span class="s2">&quot;mm&quot;</span><span class="p">)</span>
@@ -862,6 +868,7 @@
             <dd><a href="../../../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
             <dd><a href="../../../../enh_outputnode-method/index.html">enh/outputnode-method</a></dd>
             <dd><a href="../../../../feat_new-api/index.html">feat/new-api</a></dd>
+            <dd><a href="../../../../fix_field-direction/index.html">fix/field-direction</a></dd>
             <dd><a href="../../../../fix_memory-issues-194/index.html">fix/memory-issues-194</a></dd>
             <dd><a href="../../../../fix_topup-coeff-scaling/index.html">fix/topup-coeff-scaling</a></dd>
             <dd><a href="../../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
