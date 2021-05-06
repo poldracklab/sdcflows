@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.interfaces.bspline module &mdash; sdcflows 2.0.1.dev48 documentation</title>
+  <title>sdcflows.interfaces.bspline module &mdash; sdcflows 2.0.1.dev50 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                2.0.1.dev48
+                2.0.1.dev50
               </div>
             
           
@@ -314,8 +314,12 @@ The s-form header is used because the imaging axes may be oblique.</p>
 <li><p><strong>in_coeff</strong> (<em>a list of items which are a pathlike object or string representing a file</em>) – Input coefficients file(s) from TOPUP.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Outputs</dt>
-<dd class="field-even"><p><strong>out_coeff</strong> (<em>a list of items which are a pathlike object or string representing an existing file</em>) – Patched coefficients.</p>
+<dt class="field-even">Optional Inputs</dt>
+<dd class="field-even"><p><strong>pe_dir</strong> (<em>‘+’ or ‘-’ or ‘i’ or ‘i-’ or ‘j’ or ‘j-’ or ‘k’ or ‘k-’</em>) – The polarity of the phase-encoding direction corresponding to fmap_ref.
+(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">+</span></code>)</p>
+</dd>
+<dt class="field-odd">Outputs</dt>
+<dd class="field-odd"><p><strong>out_coeff</strong> (<em>a list of items which are a pathlike object or string representing an existing file</em>) – Patched coefficients.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -469,6 +473,7 @@ step of approximation/extrapolation.</p>
             <dt>Branches</dt>
             <dd><a href="../../dev_1.4.0/api/sdcflows.interfaces.bspline.html">dev/1.4.0</a></dd>
             <dd><a href="../../enh_outputnode-method/api/sdcflows.interfaces.bspline.html">enh/outputnode-method</a></dd>
+            <dd><a href="../../enh_pepolar-double-check/api/sdcflows.interfaces.bspline.html">enh/pepolar-double-check</a></dd>
             <dd><a href="../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../fix_field-direction/api/sdcflows.interfaces.bspline.html">fix/field-direction</a></dd>
             <dd><a href="../../fix_memory-issues-194/api/sdcflows.interfaces.bspline.html">fix/memory-issues-194</a></dd>

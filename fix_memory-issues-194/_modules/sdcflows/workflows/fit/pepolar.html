@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.fit.pepolar &mdash; sdcflows 2.0.1.dev48 documentation</title>
+  <title>sdcflows.workflows.fit.pepolar &mdash; sdcflows 2.0.1.dev50 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev48
+                2.0.1.dev50
               </div>
             
           
@@ -242,6 +242,7 @@
     <span class="kn">from</span> <span class="nn">niworkflows.interfaces.nibabel</span> <span class="kn">import</span> <span class="n">MergeSeries</span>
     <span class="kn">from</span> <span class="nn">niworkflows.interfaces.images</span> <span class="kn">import</span> <span class="n">IntraModalMerge</span>
 
+    <span class="kn">from</span> <span class="nn">...utils.misc</span> <span class="kn">import</span> <span class="n">front</span> <span class="k">as</span> <span class="n">_front</span>
     <span class="kn">from</span> <span class="nn">...interfaces.epi</span> <span class="kn">import</span> <span class="n">GetReadoutTime</span>
     <span class="kn">from</span> <span class="nn">...interfaces.utils</span> <span class="kn">import</span> <span class="n">Flatten</span>
     <span class="kn">from</span> <span class="nn">...interfaces.bspline</span> <span class="kn">import</span> <span class="n">TOPUPCoeffReorient</span>
@@ -295,6 +296,11 @@
 
     <span class="n">brainextraction_wf</span> <span class="o">=</span> <span class="n">init_brainextraction_wf</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">_getpe</span><span class="p">(</span><span class="n">in_meta</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">in_meta</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">in_meta</span> <span class="o">=</span> <span class="n">in_meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">in_meta</span><span class="p">[</span><span class="s2">&quot;PhaseEncodingDirection&quot;</span><span class="p">]</span>
+
     <span class="c1"># fmt: off</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
         <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">flatten</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;in_data&quot;</span><span class="p">,</span> <span class="s2">&quot;in_data&quot;</span><span class="p">),</span>
@@ -305,9 +311,10 @@
         <span class="p">(</span><span class="n">flatten</span><span class="p">,</span> <span class="n">topup</span><span class="p">,</span> <span class="p">[((</span><span class="s2">&quot;out_meta&quot;</span><span class="p">,</span> <span class="n">_pe2fsl</span><span class="p">),</span> <span class="s2">&quot;encoding_direction&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">readout_time</span><span class="p">,</span> <span class="n">topup</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;readout_time&quot;</span><span class="p">,</span> <span class="s2">&quot;readout_times&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">concat_blips</span><span class="p">,</span> <span class="n">topup</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">flatten</span><span class="p">,</span> <span class="n">fix_coeff</span><span class="p">,</span> <span class="p">[((</span><span class="s2">&quot;out_data&quot;</span><span class="p">,</span> <span class="n">_front</span><span class="p">),</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">),</span>
+                              <span class="p">((</span><span class="s2">&quot;out_meta&quot;</span><span class="p">,</span> <span class="n">_getpe</span><span class="p">),</span> <span class="s2">&quot;pe_dir&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">fix_coeff</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_fieldcoef&quot;</span><span class="p">,</span> <span class="s2">&quot;in_coeff&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">merge_corrected</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;in_files&quot;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">fix_coeff</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_fieldcoef&quot;</span><span class="p">,</span> <span class="s2">&quot;in_coeff&quot;</span><span class="p">),</span>
-                            <span class="p">(</span><span class="s2">&quot;out_corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_field&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap&quot;</span><span class="p">),</span>
                              <span class="p">(</span><span class="s2">&quot;out_jacs&quot;</span><span class="p">,</span> <span class="s2">&quot;jacobians&quot;</span><span class="p">),</span>
                              <span class="p">(</span><span class="s2">&quot;out_mats&quot;</span><span class="p">,</span> <span class="s2">&quot;xfms&quot;</span><span class="p">),</span>
@@ -614,6 +621,7 @@
             <dt>Branches</dt>
             <dd><a href="../../../../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
             <dd><a href="../../../../../enh_outputnode-method/index.html">enh/outputnode-method</a></dd>
+            <dd><a href="../../../../../enh_pepolar-double-check/index.html">enh/pepolar-double-check</a></dd>
             <dd><a href="../../../../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../../../../fix_field-direction/index.html">fix/field-direction</a></dd>
             <dd><a href="pepolar.html">fix/memory-issues-194</a></dd>
