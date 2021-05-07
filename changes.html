@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>What’s new? &mdash; sdcflows 2.0.1.dev67 documentation</title>
+  <title>What’s new? &mdash; sdcflows 2.0.2 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                2.0.1.dev67
+                2.0.2
               </div>
             
           
@@ -95,6 +95,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Library API (application program interface)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">What’s new?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#may-07-2021">2.0.2 (May 07, 2021)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#march-05-2021">2.0.1 (March 05, 2021)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#january-25-2021">2.0.0 (January 25, 2021)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#x-series">1.3.x series</a><ul>
@@ -195,11 +196,37 @@
   
 
 
+    
+    
 
 
 
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="master/changes.html"><b>Warning:</b> This document is for an old version of sdcflows. The main version is master.</a></p>
 <section id="what-s-new">
 <h1>What’s new?<a class="headerlink" href="#what-s-new" title="Permalink to this headline">¶</a></h1>
+<section id="may-07-2021">
+<h2>2.0.2 (May 07, 2021)<a class="headerlink" href="#may-07-2021" title="Permalink to this headline">¶</a></h2>
+<p>A patch release including hot-fixes and some relevant improvements inteded for the reliability
+of the new API.
+The most relevant advance is the new <span class="math notranslate nohighlight">\(B_0\)</span> fieldmap unwarping object which is compatible
+with <em>NiTranforms</em> and evades the problem of fiddling with the target image’s x-forms.</p>
+<ul class="simple">
+<li><p>FIX: Normalize phase-encoding polarity of coefficients after TOPUP (#202)</p></li>
+<li><p>FIX: Revise generation of the displacements field from coefficients (#199)</p></li>
+<li><p>FIX: Inconsistency left after renaming inputs to SDC-SyN (removing “BOLD”) (#182)</p></li>
+<li><p>FIX: Correctly interpolate the BIDS root when datasets have sessions (#180)</p></li>
+<li><p>ENH: <span class="math notranslate nohighlight">\(B_0\)</span> fieldmap unwarping object (#204)</p></li>
+<li><p>ENH: Add estimation method description to outputs (#191)</p></li>
+<li><p>ENH: Ensure a function node is covered with unit tests (#188)</p></li>
+<li><p>ENH: Add a preprocessing pipeline for SDC-SyN (#184)</p></li>
+<li><p>ENH: [rodents] Add input to override default B-Spline distances in INU correction with N4 (#178)</p></li>
+<li><p>ENH: Adopt new brain extraction algorithm in magnitude preparation workflow (#176)</p></li>
+<li><p>DOC: Fix typos as per codespell (#205)</p></li>
+<li><p>MAINT: Double-check conversion from TOPUP to standardized fieldmaps (#200)</p></li>
+<li><p>MAINT: Divide ambiguous debug parameter into smaller, more focused parameters (#190)</p></li>
+<li><p>MAINT: Adapt to GitHub actions’ upgrade to Ubuntu 20.04 (#185)</p></li>
+</ul>
+</section>
 <section id="march-05-2021">
 <h2>2.0.1 (March 05, 2021)<a class="headerlink" href="#march-05-2021" title="Permalink to this headline">¶</a></h2>
 <p>A patch release including some bugfixes and minimal improvements over the previous
@@ -306,10 +333,11 @@ coefficients.</p></li>
 anyone listed as developer or contributor may write and submit manuscripts
 about <em>SDCFlows</em>.
 To do so, please move the author(s) name(s) to the front of the following list:</p>
-<p>Markiewicz, Christopher J. <sup>1</sup>; Goncalves, Mathias <sup>1</sup>; Adebimpe, Azeez <sup>2</sup>; Blair, Ross W. <sup>1</sup>; Cieslak, Matthew <sup>2</sup>; Naveau, Mikaël <sup>3</sup>; Sitek, Kevin R. <sup>4</sup>; Sneve, Markus H. <sup>5</sup>; Gorgolewski, Krzysztof J. <sup>1</sup>; Satterthwaite, Theodore D. <sup>2</sup>; Poldrack, Russell A. <sup>1</sup>; Esteban, Oscar <sup>6</sup>.</p>
+<p>Markiewicz, Christopher J. <sup>1</sup>; Goncalves, Mathias <sup>1</sup>; MacNicol, Eilidh <sup>2</sup>; Adebimpe, Azeez <sup>3</sup>; Blair, Ross W. <sup>1</sup>; Cieslak, Matthew <sup>3</sup>; Naveau, Mikaël <sup>4</sup>; Sitek, Kevin R. <sup>5</sup>; Sneve, Markus H. <sup>6</sup>; Gorgolewski, Krzysztof J. <sup>1</sup>; Satterthwaite, Theodore D. <sup>3</sup>; Poldrack, Russell A. <sup>1</sup>; Esteban, Oscar <sup>7</sup>.</p>
 <p>Affiliations:</p>
 <ol class="arabic simple">
 <li><p>Department of Psychology, Stanford University</p></li>
+<li><p>Department of Neuroimaging, King’s College London</p></li>
 <li><p>Perelman School of Medicine, University of Pennsylvania, PA, USA</p></li>
 <li><p>Cyceron, UMS 3408 (CNRS - UCBN), France</p></li>
 <li><p>Speech &amp; Hearing Bioscience &amp; Technology Program, Harvard University</p></li>
@@ -523,7 +551,7 @@ and <a class="reference external" href="https://github.com/nipreps/sdcflows/comm
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: master
+        v: 2.0.2
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -554,6 +582,7 @@ and <a class="reference external" href="https://github.com/nipreps/sdcflows/comm
             <dd><a href="2.0.0rc4/changes.html">2.0.0rc4</a></dd>
             <dd><a href="2.0.0rc5/changes.html">2.0.0rc5</a></dd>
             <dd><a href="2.0.1/changes.html">2.0.1</a></dd>
+            <dd><a href="2.0.2/changes.html">2.0.2</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>

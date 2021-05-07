@@ -1,0 +1,25 @@
+strict digraph  {
+"inputnode (utility)";
+"flatten (utils)";
+"readout_time (epi)";
+"concat_blips (nibabel)";
+"topup (fsl)";
+"fix_coeff (bspline)";
+"outputnode (utility)";
+"merge_corrected (images)";
+brainextraction_wf;
+"inputnode (utility)" -> "flatten (utils)";
+"flatten (utils)" -> "readout_time (epi)";
+"flatten (utils)" -> "concat_blips (nibabel)";
+"flatten (utils)" -> "topup (fsl)";
+"flatten (utils)" -> "fix_coeff (bspline)";
+"readout_time (epi)" -> "topup (fsl)";
+"concat_blips (nibabel)" -> "topup (fsl)";
+"topup (fsl)" -> "fix_coeff (bspline)";
+"topup (fsl)" -> "outputnode (utility)";
+"topup (fsl)" -> "merge_corrected (images)";
+"fix_coeff (bspline)" -> "outputnode (utility)";
+"merge_corrected (images)" -> brainextraction_wf;
+"merge_corrected (images)" -> "outputnode (utility)";
+brainextraction_wf -> "outputnode (utility)";
+}
