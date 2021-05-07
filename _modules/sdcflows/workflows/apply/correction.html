@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.apply.correction &mdash; sdcflows 2.0.1.dev61 documentation</title>
+  <title>sdcflows.workflows.apply.correction &mdash; sdcflows 2.0.1.dev67 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev61
+                2.0.1.dev67
               </div>
             
           
@@ -215,9 +215,8 @@
 <span class="sd">        a fast mask calculated from the corrected EPI reference.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">niworkflows.interfaces.fixes</span> <span class="kn">import</span> <span class="n">FixHeaderApplyTransforms</span> <span class="k">as</span> <span class="n">ApplyTransforms</span>
     <span class="kn">from</span> <span class="nn">...interfaces.epi</span> <span class="kn">import</span> <span class="n">GetReadoutTime</span>
-    <span class="kn">from</span> <span class="nn">...interfaces.bspline</span> <span class="kn">import</span> <span class="n">Coefficients2Warp</span>
+    <span class="kn">from</span> <span class="nn">...interfaces.bspline</span> <span class="kn">import</span> <span class="n">ApplyCoeffsField</span>
     <span class="kn">from</span> <span class="nn">..ancillary</span> <span class="kn">import</span> <span class="n">init_brainextraction_wf</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -232,10 +231,8 @@
 
     <span class="n">rotime</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">GetReadoutTime</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;rotime&quot;</span><span class="p">)</span>
     <span class="n">rotime</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">_always_run</span> <span class="o">=</span> <span class="n">debug</span>
-    <span class="n">resample</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">Coefficients2Warp</span><span class="p">(</span><span class="n">low_mem</span><span class="o">=</span><span class="n">debug</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;resample&quot;</span><span class="p">)</span>
-    <span class="n">unwarp</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
-        <span class="n">ApplyTransforms</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;BSpline&quot;</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unwarp&quot;</span>
-    <span class="p">)</span>
+    <span class="n">resample</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">ApplyCoeffsField</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;resample&quot;</span><span class="p">)</span>
+
     <span class="n">brainextraction_wf</span> <span class="o">=</span> <span class="n">init_brainextraction_wf</span><span class="p">()</span>
 
     <span class="c1"># fmt:off</span>
@@ -246,11 +243,9 @@
                                <span class="p">(</span><span class="s2">&quot;fmap_coeff&quot;</span><span class="p">,</span> <span class="s2">&quot;in_coeff&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">rotime</span><span class="p">,</span> <span class="n">resample</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;readout_time&quot;</span><span class="p">,</span> <span class="s2">&quot;ro_time&quot;</span><span class="p">),</span>
                             <span class="p">(</span><span class="s2">&quot;pe_direction&quot;</span><span class="p">,</span> <span class="s2">&quot;pe_dir&quot;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">unwarp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;distorted&quot;</span><span class="p">,</span> <span class="s2">&quot;reference_image&quot;</span><span class="p">),</span>
-                             <span class="p">(</span><span class="s2">&quot;distorted&quot;</span><span class="p">,</span> <span class="s2">&quot;input_image&quot;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">resample</span><span class="p">,</span> <span class="n">unwarp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_warp&quot;</span><span class="p">,</span> <span class="s2">&quot;transforms&quot;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">resample</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_field&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">unwarp</span><span class="p">,</span> <span class="n">brainextraction_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;output_image&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">resample</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_field&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">),</span>
+                                <span class="p">(</span><span class="s2">&quot;out_warp&quot;</span><span class="p">,</span> <span class="s2">&quot;transforms&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">resample</span><span class="p">,</span> <span class="n">brainextraction_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.in_file&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">brainextraction_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[</span>
             <span class="p">(</span><span class="s2">&quot;outputnode.out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;corrected&quot;</span><span class="p">),</span>
             <span class="p">(</span><span class="s2">&quot;outputnode.out_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;corrected_mask&quot;</span><span class="p">),</span>
@@ -329,11 +324,8 @@
             <dt>Branches</dt>
             <dd><a href="../../../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
             <dd><a href="../../../../enh_outputnode-method/index.html">enh/outputnode-method</a></dd>
-            <dd><a href="../../../../enh_pepolar-double-check/index.html">enh/pepolar-double-check</a></dd>
             <dd><a href="../../../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../../../fix_field-direction/index.html">fix/field-direction</a></dd>
-            <dd><a href="../../../../fix_memory-issues-194/index.html">fix/memory-issues-194</a></dd>
-            <dd><a href="../../../../fix_topup-coeff-scaling/index.html">fix/topup-coeff-scaling</a></dd>
             <dd><a href="../../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>
             <dd><a href="../../../../maint_1.3.x/index.html">maint/1.3.x</a></dd>

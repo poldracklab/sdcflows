@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.fit.pepolar &mdash; sdcflows 2.0.1.dev61 documentation</title>
+  <title>sdcflows.workflows.fit.pepolar &mdash; sdcflows 2.0.1.dev67 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev61
+                2.0.1.dev67
               </div>
             
           
@@ -193,7 +193,9 @@
 <span class="s2">echo-planar imaging (EPI) references &quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="init_topup_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.fit.pepolar.html#sdcflows.workflows.fit.pepolar.init_topup_wf">[docs]</a><span class="k">def</span> <span class="nf">init_topup_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pepolar_estimate_wf&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="init_topup_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.fit.pepolar.html#sdcflows.workflows.fit.pepolar.init_topup_wf">[docs]</a><span class="k">def</span> <span class="nf">init_topup_wf</span><span class="p">(</span>
+    <span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pepolar_estimate_wf&quot;</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create the PEPOLAR field estimation workflow based on FSL&#39;s ``topup``.</span>
 
@@ -282,7 +284,7 @@
 
     <span class="n">topup</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
         <span class="n">TOPUP</span><span class="p">(</span>
-            <span class="n">config</span><span class="o">=</span><span class="n">_pkg_fname</span><span class="p">(</span><span class="s2">&quot;sdcflows&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;data/flirtsch/b02b0</span><span class="si">{</span><span class="s1">&#39;_quick&#39;</span> <span class="o">*</span> <span class="n">debug</span><span class="si">}</span><span class="s2">.cnf&quot;</span><span class="p">)</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">_pkg_fname</span><span class="p">(</span><span class="s2">&quot;sdcflows&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;data/flirtsch/b02b0</span><span class="si">{</span><span class="s1">&#39;_quick&#39;</span> <span class="o">*</span> <span class="n">sloppy</span><span class="si">}</span><span class="s2">.cnf&quot;</span><span class="p">)</span>
         <span class="p">),</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;topup&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -314,17 +316,49 @@
         <span class="p">(</span><span class="n">flatten</span><span class="p">,</span> <span class="n">fix_coeff</span><span class="p">,</span> <span class="p">[((</span><span class="s2">&quot;out_data&quot;</span><span class="p">,</span> <span class="n">_front</span><span class="p">),</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">),</span>
                               <span class="p">((</span><span class="s2">&quot;out_meta&quot;</span><span class="p">,</span> <span class="n">_getpe</span><span class="p">),</span> <span class="s2">&quot;pe_dir&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">fix_coeff</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_fieldcoef&quot;</span><span class="p">,</span> <span class="s2">&quot;in_coeff&quot;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">merge_corrected</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;in_files&quot;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_field&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap&quot;</span><span class="p">),</span>
-                             <span class="p">(</span><span class="s2">&quot;out_jacs&quot;</span><span class="p">,</span> <span class="s2">&quot;jacobians&quot;</span><span class="p">),</span>
-                             <span class="p">(</span><span class="s2">&quot;out_mats&quot;</span><span class="p">,</span> <span class="s2">&quot;xfms&quot;</span><span class="p">),</span>
-                             <span class="p">(</span><span class="s2">&quot;out_warps&quot;</span><span class="p">,</span> <span class="s2">&quot;out_warps&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_jacs&quot;</span><span class="p">,</span> <span class="s2">&quot;jacobians&quot;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s2">&quot;out_mats&quot;</span><span class="p">,</span> <span class="s2">&quot;xfms&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">merge_corrected</span><span class="p">,</span> <span class="n">brainextraction_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_avg&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.in_file&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">merge_corrected</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_avg&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">brainextraction_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;outputnode.out_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">fix_coeff</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_coeff&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_coeff&quot;</span><span class="p">)]),</span>
     <span class="p">])</span>
     <span class="c1"># fmt: on</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="c1"># fmt: off</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">merge_corrected</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;in_files&quot;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_field&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap&quot;</span><span class="p">),</span>
+                                 <span class="p">(</span><span class="s2">&quot;out_warps&quot;</span><span class="p">,</span> <span class="s2">&quot;out_warps&quot;</span><span class="p">)]),</span>
+        <span class="p">])</span>
+        <span class="c1"># fmt: on</span>
+        <span class="k">return</span> <span class="n">workflow</span>
+
+    <span class="kn">from</span> <span class="nn">...interfaces.bspline</span> <span class="kn">import</span> <span class="n">ApplyCoeffsField</span>
+
+    <span class="n">unwarp</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">ApplyCoeffsField</span><span class="p">(</span><span class="n">ro_time</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unwarp&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_getpe</span><span class="p">(</span><span class="n">inlist</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inlist</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">inlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">inlist</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">m</span><span class="p">[</span><span class="s2">&quot;PhaseEncodingDirection&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">inlist</span><span class="p">]</span>
+
+    <span class="c1"># fmt:off</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">fix_coeff</span><span class="p">,</span> <span class="n">unwarp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_coeff&quot;</span><span class="p">,</span> <span class="s2">&quot;in_coeff&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">flatten</span><span class="p">,</span> <span class="n">unwarp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_data&quot;</span><span class="p">,</span> <span class="s2">&quot;in_target&quot;</span><span class="p">),</span>
+                           <span class="p">((</span><span class="s2">&quot;out_meta&quot;</span><span class="p">,</span> <span class="n">_getpe</span><span class="p">),</span> <span class="s2">&quot;pe_dir&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">readout_time</span><span class="p">,</span> <span class="n">unwarp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;readout_time&quot;</span><span class="p">,</span> <span class="s2">&quot;ro_time&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">unwarp</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_warp&quot;</span><span class="p">,</span> <span class="s2">&quot;out_warps&quot;</span><span class="p">),</span>
+                              <span class="p">(</span><span class="s2">&quot;out_field&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">unwarp</span><span class="p">,</span> <span class="n">merge_corrected</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;in_files&quot;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+    <span class="c1"># fmt:on</span>
 
     <span class="k">return</span> <span class="n">workflow</span></div>
 
@@ -621,11 +655,8 @@
             <dt>Branches</dt>
             <dd><a href="../../../../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
             <dd><a href="pepolar.html">enh/outputnode-method</a></dd>
-            <dd><a href="../../../../../enh_pepolar-double-check/index.html">enh/pepolar-double-check</a></dd>
             <dd><a href="../../../../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../../../../fix_field-direction/index.html">fix/field-direction</a></dd>
-            <dd><a href="../../../../../fix_memory-issues-194/index.html">fix/memory-issues-194</a></dd>
-            <dd><a href="../../../../../fix_topup-coeff-scaling/index.html">fix/topup-coeff-scaling</a></dd>
             <dd><a href="../../../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>
             <dd><a href="../../../../../maint_1.3.x/index.html">maint/1.3.x</a></dd>

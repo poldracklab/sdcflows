@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.interfaces.bspline module &mdash; sdcflows 2.0.1.dev61 documentation</title>
+  <title>sdcflows.interfaces.bspline module &mdash; sdcflows 2.0.1.dev67 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                2.0.1.dev61
+                2.0.1.dev67
               </div>
             
           
@@ -196,6 +196,32 @@
 <span id="sdcflows-interfaces-bspline-module"></span><h1>sdcflows.interfaces.bspline module<a class="headerlink" href="#module-sdcflows.interfaces.bspline" title="Permalink to this headline">¶</a></h1>
 <p>Filtering of <span class="math notranslate nohighlight">\(B_0\)</span> field mappings with B-Splines.</p>
 <dl class="class">
+<dt id="sdcflows.interfaces.bspline.ApplyCoeffsField">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.bspline.</code><code class="sig-name descname">ApplyCoeffsField</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/bspline.html#ApplyCoeffsField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.bspline.ApplyCoeffsField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Convert a set of B-Spline coefficients to a full displacements map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mandatory Inputs</dt>
+<dd class="field-odd"><p><strong>in_coeff</strong> (<em>a list of items which are a pathlike object or string representing an existing file</em>) – Input coefficients, after alignment to the EPI data.</p>
+</dd>
+<dt class="field-even">Optional Inputs</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>in_target</strong> (<em>a list of items which are a pathlike object or string representing a file</em>)</p></li>
+<li><p><strong>pe_dir</strong> (<em>a list of items which are ‘i’ or ‘i-’ or ‘j’ or ‘j-’ or ‘k’ or ‘k-’</em>)</p></li>
+<li><p><strong>ro_time</strong> (<em>a list of items which are a float</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Outputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_corrected</strong> (<em>a list of items which are a pathlike object or string representing an existing file</em>)</p></li>
+<li><p><strong>out_field</strong> (<em>a pathlike object or string representing an existing file</em>)</p></li>
+<li><p><strong>out_warp</strong> (<em>a list of items which are a pathlike object or string representing an existing file</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
 <dt id="sdcflows.interfaces.bspline.BSplineApprox">
 <em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.bspline.</code><code class="sig-name descname">BSplineApprox</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/bspline.html#BSplineApprox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.bspline.BSplineApprox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
@@ -249,33 +275,6 @@ the tri-cubic B-Splines <span class="math notranslate nohighlight">\(\Psi^3(\mat
 <li><p><strong>out_error</strong> (<em>a pathlike object or string representing an existing file</em>)</p></li>
 <li><p><strong>out_extrapolated</strong> (<em>a pathlike object or string representing a file</em>)</p></li>
 <li><p><strong>out_field</strong> (<em>a pathlike object or string representing an existing file</em>)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="class">
-<dt id="sdcflows.interfaces.bspline.Coefficients2Warp">
-<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.bspline.</code><code class="sig-name descname">Coefficients2Warp</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/bspline.html#Coefficients2Warp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.bspline.Coefficients2Warp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
-<p>Convert a set of B-Spline coefficients to a full displacements map.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Mandatory Inputs</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>in_coeff</strong> (<em>a list of items which are a pathlike object or string representing an existing file</em>) – Input coefficients, after alignment to the EPI data.</p></li>
-<li><p><strong>in_target</strong> (<em>a pathlike object or string representing a file</em>) – Input EPI data to be corrected.</p></li>
-<li><p><strong>pe_dir</strong> (<em>‘i’ or ‘i-’ or ‘j’ or ‘j-’ or ‘k’ or ‘k-’</em>) – The phase-encoding direction corresponding to in_target.</p></li>
-<li><p><strong>ro_time</strong> (<em>a float</em>) – EPI readout time (s).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Optional Inputs</dt>
-<dd class="field-even"><p><strong>low_mem</strong> (<em>a boolean</em>) – Perform on low-mem fingerprint regime.
-(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p>
-</dd>
-<dt class="field-odd">Outputs</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>out_field</strong> (<em>a pathlike object or string representing an existing file</em>)</p></li>
-<li><p><strong>out_warp</strong> (<em>a pathlike object or string representing an existing file</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -420,11 +419,8 @@ The s-form header is used because the imaging axes may be oblique.</p>
             <dt>Branches</dt>
             <dd><a href="../../dev_1.4.0/api/sdcflows.interfaces.bspline.html">dev/1.4.0</a></dd>
             <dd><a href="../../enh_outputnode-method/api/sdcflows.interfaces.bspline.html">enh/outputnode-method</a></dd>
-            <dd><a href="../../enh_pepolar-double-check/api/sdcflows.interfaces.bspline.html">enh/pepolar-double-check</a></dd>
             <dd><a href="../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../fix_field-direction/api/sdcflows.interfaces.bspline.html">fix/field-direction</a></dd>
-            <dd><a href="../../fix_memory-issues-194/api/sdcflows.interfaces.bspline.html">fix/memory-issues-194</a></dd>
-            <dd><a href="../../fix_topup-coeff-scaling/api/sdcflows.interfaces.bspline.html">fix/topup-coeff-scaling</a></dd>
             <dd><a href="../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../maint_1.2.x/index.html">maint/1.2.x</a></dd>
             <dd><a href="../../maint_1.3.x/index.html">maint/1.3.x</a></dd>
