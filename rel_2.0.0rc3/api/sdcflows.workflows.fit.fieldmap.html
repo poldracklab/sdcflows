@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.fit.fieldmap module &mdash; sdcflows 2.0.1.dev59 documentation</title>
+  <title>sdcflows.workflows.fit.fieldmap module &mdash; sdcflows 2.0.1.dev61 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                2.0.1.dev59
+                2.0.1.dev61
               </div>
             
           
@@ -246,13 +246,13 @@ the displacements field, can be obtained as:</p>
 \[V(i, j, k) = \frac{\Delta \Theta (i, j, k)}{2\pi \cdot \Delta\text{TE}}.
 \label{eq:fieldmap-4}\tag{4}\]</div>
 <p>This calculation is further complicated by the fact that <span class="math notranslate nohighlight">\(\Theta_i\)</span>
-(and therfore, <span class="math notranslate nohighlight">\(\Delta \Theta\)</span>) are clipped (or <em>wrapped</em>) within
+(and therefore, <span class="math notranslate nohighlight">\(\Delta \Theta\)</span>) are clipped (or <em>wrapped</em>) within
 the range <span class="math notranslate nohighlight">\([0 \dotsb 2\pi )\)</span>.
 It is necessary to find the integer number of offsets that make a region
 continuously smooth with its neighbors (<em>phase-unwrapping</em>, <a class="reference internal" href="#jenkinson2003" id="id3"><span>[Jenkinson2003]</span></a>).</p>
 <p>This corresponds to <a class="reference external" href="https://bids-specification.readthedocs.io/en/latest/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#two-phase-images-and-two-magnitude-images">this section of the BIDS specification</a>.
 Some scanners produce one <code class="docutils literal notranslate"><span class="pre">phasediff</span></code> map, where the drift between the two echos has
-already been calulated (see <a class="reference external" href="https://bids-specification.readthedocs.io/en/latest/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#case-1-phase-difference-map-and-at-least-one-magnitude-image">the corresponding section of BIDS</a>).</p>
+already been calculated (see <a class="reference external" href="https://bids-specification.readthedocs.io/en/latest/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#case-1-phase-difference-map-and-at-least-one-magnitude-image">the corresponding section of BIDS</a>).</p>
 <p class="rubric">References</p>
 <dl class="citation">
 <dt class="label" id="hutton2002"><span class="brackets">Hutton2002</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
