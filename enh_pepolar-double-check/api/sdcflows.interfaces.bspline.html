@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.interfaces.bspline module &mdash; sdcflows 2.0.1.dev51 documentation</title>
+  <title>sdcflows.interfaces.bspline module &mdash; sdcflows 2.0.1.dev59 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                2.0.1.dev51
+                2.0.1.dev59
               </div>
             
           
@@ -217,14 +217,14 @@ Here, and adapted to 3D:</p>
 \label{eq:1}\tag{1}\]</div>
 <p class="rubric">References</p>
 <dl class="citation">
-<dt class="label" id="unser1999"><span class="brackets">Unser1999</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
+<dt class="label" id="unser1999"><span class="brackets"><a class="fn-backref" href="#id1">Unser1999</a></span></dt>
 <dd><p>M. Unser, “<a class="reference external" href="http://bigwww.epfl.ch/publications/unser9902.pdf">Splines: A Perfect Fit for Signal and Image Processing</a>,” IEEE Signal Processing
 Magazine 16(6):22-38, 1999.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#sdcflows.interfaces.bspline.bspline_weights" title="sdcflows.interfaces.bspline.bspline_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">bspline_weights()</span></code></a> - for Eq. <span class="math notranslate nohighlight">\(\eqref{eq:2}\)</span> and the evaluation of
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">bspline_weights()</span></code> - for Eq. <span class="math notranslate nohighlight">\(\eqref{eq:2}\)</span> and the evaluation of
 the tri-cubic B-Splines <span class="math notranslate nohighlight">\(\Psi^3(\mathbf{k}, \mathbf{s})\)</span>.</p>
 </div>
 <dl class="field-list simple">
@@ -262,10 +262,6 @@ the tri-cubic B-Splines <span class="math notranslate nohighlight">\(\Psi^3(\mat
 <em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.bspline.</code><code class="sig-name descname">Coefficients2Warp</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/bspline.html#Coefficients2Warp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.bspline.Coefficients2Warp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
 <p>Convert a set of B-Spline coefficients to a full displacements map.</p>
-<p>Implements Eq. <span class="math notranslate nohighlight">\(\eqref{eq:1}\)</span>, interpolating <span class="math notranslate nohighlight">\(f(\mathbf{s})\)</span>
-for all voxels in the target-image’s extent.
-When the readout time is known, the displacements field can be calculated
-following <a class="reference external" href="sdcflows.workflows.fit.fieldmap.html#mjx-eqn-eq%3Afieldmap-2">Eq. (2) in the fieldmap fitting section</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Mandatory Inputs</dt>
 <dd class="field-odd"><ul class="simple">
@@ -351,54 +347,6 @@ The s-form header is used because the imaging axes may be oblique.</p>
 <dd><p>Create a <a class="reference external" href="https://nipy.org/nibabel/reference/nibabel.nifti1.html#nibabel.nifti1.Nifti1Image" title="(in NiBabel v3.2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Nifti1Image</span></code></a> embedding the location of control points.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="sdcflows.interfaces.bspline.bspline_weights">
-<code class="sig-prename descclassname">sdcflows.interfaces.bspline.</code><code class="sig-name descname">bspline_weights</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">ctrl_nii</em>, <em class="sig-param">blocksize=None</em>, <em class="sig-param">mem_percent=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/bspline.html#bspline_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.bspline.bspline_weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the tensor-product cubic B-Spline kernel weights for a list of 3D points.</p>
-<p>For each of the <em>N</em> input samples <span class="math notranslate nohighlight">\((s_1, s_2, s_3)\)</span> and <em>K</em> control
-points or <em>knots</em> <span class="math notranslate nohighlight">\(\mathbf{k} =(k_1, k_2, k_3)\)</span>, the tensor-product
-cubic B-Spline kernel weights are calculated:</p>
-<div class="math notranslate nohighlight">
-\[\Psi^3(\mathbf{k}, \mathbf{s}) =
-\beta^3(s_1 - k_1) \cdot \beta^3(s_2 - k_2) \cdot \beta^3(s_3 - k_3),
-\label{eq:2}\tag{2}\]</div>
-<p>where each <span class="math notranslate nohighlight">\(\beta^3\)</span> represents the cubic B-Spline for one dimension.
-The 1D B-Spline kernel implementation uses <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.piecewise.html#numpy.piecewise" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.piecewise</span></code></a>, and is based on the
-closed-form given by Eq. (6) of <a class="reference internal" href="#unser1999" id="id2"><span>[Unser1999]</span></a>.</p>
-<p>By iterating over dimensions, the data samples that fall outside of the compact
-support of the tensor-product kernel associated to each control point can be filtered
-out and dismissed to lighten computation.</p>
-<p>Finally, the resulting weights matrix <span class="math notranslate nohighlight">\(\Psi^3(\mathbf{k}, \mathbf{s})\)</span>
-can be easily identified in Eq. <span class="math notranslate nohighlight">\(\eqref{eq:1}\)</span> and used as the design matrix
-for approximation of data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>; <span class="math notranslate nohighlight">\(N \times 3\)</span>) – Array of 3D coordinates of samples from the data to be approximated,
-in index (i,j,k) coordinates with respect to the control points grid.</p></li>
-<li><p><strong>ctrl_nii</strong> (<a class="reference external" href="https://nipy.org/nibabel/reference/nibabel.spatialimages.html#module-nibabel.spatialimages" title="(in NiBabel v3.2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nibabel.spatialimages</span></code></a>) – An spatial image object (typically, a <a class="reference external" href="https://nipy.org/nibabel/reference/nibabel.nifti1.html#nibabel.nifti1.Nifti1Image" title="(in NiBabel v3.2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Nifti1Image</span></code></a>)
-embedding the location of the control points of the B-Spline grid.
-The data array should contain a total of <span class="math notranslate nohighlight">\(K\)</span> knots (control points).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>weights</strong> – A sparse matrix of interpolating weights <span class="math notranslate nohighlight">\(\Psi^3(\mathbf{k}, \mathbf{s})\)</span>
-for the <em>N</em> samples in <code class="docutils literal notranslate"><span class="pre">points</span></code>, for each of the total <em>K</em> knots.
-This sparse matrix can be directly used as design matrix for the fitting
-step of approximation/extrapolation.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<span class="math notranslate nohighlight">\(K \times N\)</span>)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sdcflows.interfaces.bspline.grid_bspline_weights">
-<code class="sig-prename descclassname">sdcflows.interfaces.bspline.</code><code class="sig-name descname">grid_bspline_weights</code><span class="sig-paren">(</span><em class="sig-param">target_nii</em>, <em class="sig-param">ctrl_nii</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/bspline.html#grid_bspline_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.bspline.grid_bspline_weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fast, gridded evaluation.</p>
-</dd></dl>
-
 </section>
 
 
@@ -476,7 +424,6 @@ step of approximation/extrapolation.</p>
             <dd><a href="../../dev_1.4.0/api/sdcflows.interfaces.bspline.html">dev/1.4.0</a></dd>
             <dd><a href="../../enh_outputnode-method/api/sdcflows.interfaces.bspline.html">enh/outputnode-method</a></dd>
             <dd><a href="sdcflows.interfaces.bspline.html">enh/pepolar-double-check</a></dd>
-            <dd><a href="../../enh_transform-203/api/sdcflows.interfaces.bspline.html">enh/transform-203</a></dd>
             <dd><a href="../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../fix_field-direction/api/sdcflows.interfaces.bspline.html">fix/field-direction</a></dd>
             <dd><a href="../../fix_memory-issues-194/api/sdcflows.interfaces.bspline.html">fix/memory-issues-194</a></dd>
